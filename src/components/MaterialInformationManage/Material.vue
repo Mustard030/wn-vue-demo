@@ -94,10 +94,25 @@
         <el-form-item label="名称">
           <el-input v-model="addForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="活动区域">
+        <el-form-item label="代号">
           <el-input v-model="addForm.code"></el-input>
         </el-form-item>
-        <el-form-item label="活动形式">
+        <el-form-item label="规格型号">
+          <el-input v-model="addForm.type"></el-input>
+        </el-form-item>
+        <el-form-item label="执行标准">
+          <el-input v-model="addForm.type"></el-input>
+        </el-form-item>
+        <el-form-item label="单位">
+          <el-input v-model="addForm.type"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="addForm.type"></el-input>
+        </el-form-item>
+        <el-form-item label="产品名称">
+          <el-input v-model="addForm.type"></el-input>
+        </el-form-item>
+        <el-form-item label="备注">
           <el-input v-model="addForm.type"></el-input>
         </el-form-item>
       </el-form>

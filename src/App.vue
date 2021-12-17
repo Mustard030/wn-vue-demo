@@ -3,7 +3,7 @@
     <el-container>
       <el-header>威能物资管理系统</el-header>
       <el-container>
-        <el-aside :width="switchCollapseWidth" style="height: 100%">
+        <el-aside :width="switchCollapseWidth">
           <el-menu unique-opened router :collapse="isCollapse" class="el-menu-vertical-demo">
             <el-menu-item @click="switchCollapse">
               <i class="el-icon-s-unfold" v-if="isCollapse" style="text-align: right"></i>
@@ -126,6 +126,7 @@ export default {
 
 .el-menu {
   border-right: none;
+  height: 915px;
 }
 
 #username {
