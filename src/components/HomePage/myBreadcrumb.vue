@@ -8,9 +8,7 @@
 <script>
 export default {
   name: "my-breadcrumb",
-  props:{
-    path: Array
-  }
+  props:['path'],
 }
 </script>
 

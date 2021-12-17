@@ -42,8 +42,8 @@ export default {
   },
   methods:{
     async post_test(){
-      const {data:res} = await this.$http.post('', {'aa':1,'bb':"123"})
-      console.log(res)
+      // const {data:res} = await this.$http.post('', {'aa':1,'bb':"123"})
+      // console.log(res)
     }
   }
 }

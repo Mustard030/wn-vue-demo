@@ -90,7 +90,7 @@ export default {
 <style lang="less" scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
-  min-height: 400px;
+  min-height: 100%;
 }
 
 .headtool {
@@ -126,7 +126,6 @@ export default {
 
 .el-menu {
   border-right: none;
-  height: 915px;
 }
 
 #username {

@@ -5,7 +5,6 @@ import router from './router'
 import store from './store'
 import '@/assets/css/global.css'
 import './plugins/element.js'
-import './plugins/mycomponent.js'
 
 // NProgress
 import NProgress from 'nprogress'
