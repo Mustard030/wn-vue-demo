@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <el-container>
+    <el-container class="home-container">
       <el-header>威能物资管理系统</el-header>
       <el-container>
-        <el-aside :width="switchCollapseWidth">
+        <el-aside :style="{width:switchCollapseWidth}">
           <el-menu unique-opened router :collapse="isCollapse" class="el-menu-vertical-demo">
             <el-menu-item @click="switchCollapse">
               <i class="el-icon-s-unfold" v-if="isCollapse" style="text-align: right"></i>
@@ -72,7 +72,7 @@ export default {
   methods: {
     switchCollapse() {
       this.isCollapse = !this.isCollapse
-      return this.isCollapse
+      // return this.isCollapse
     },
     switchCollapseWidth() {
       if (this.isCollapse) {
@@ -91,10 +91,6 @@ export default {
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 100%;
-}
-
-.headtool {
-  cursor: pointer;
 }
 
 .home-container {
@@ -121,11 +117,13 @@ export default {
 }
 
 .el-main {
+  height: 100%;
   background-color: #EAEDF1;
 }
 
 .el-menu {
   border-right: none;
+  min-height: 100%;
 }
 
 #username {
