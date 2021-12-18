@@ -21,20 +21,8 @@
       </el-row>
 
       <!-- 原材料列表区 -->
-      <el-table :data="tableData" border stripe max-height="700">
-        <el-table-column type="expand" fixed>
-          <template v-slot="props">
-            <el-form label-position="left" inline class="demo-table-expand">
-              <div>
-                <el-form-item label="详情页内容">
-                  <div>
-                    <p v-html="props.row.introduce"></p>
-                  </div>
-                </el-form-item>
-              </div>
-            </el-form>
-          </template>
-        </el-table-column>
+      <el-table :data="tableData" border stripe height="700">
+
         <el-table-column label="序号" prop="index" width="85px" fixed show-overflow-tooltip></el-table-column>
         <el-table-column label="名称" prop="name" width="150px" fixed show-overflow-tooltip>
           <template v-slot="scope">
@@ -176,7 +164,7 @@
           <el-checkbox v-model="addForm.isProduct">此物料可作为成品使用</el-checkbox>
         </el-form-item>
         <el-form-item label="产品名称">
-          <el-select v-model="addForm.productName" filterable placeholder="成品选择" :disabled="!addForm.isProduct">
+          <el-select v-model="addForm.productName" filterable :disabled="!addForm.isProduct">
             <el-option
                 v-for="item in productData"
                 :key="item.value"
@@ -271,43 +259,42 @@ export default {
       //提交后处理
     },
     // 提交修改
-    submitEdit(row){
+    submitEdit(row) {
       row.edit = !row.edit
       console.log("提交")
     },
     //删除确认
-    deleteConfirm(deleteId) {
-      this.$confirm(`此操作将永久删除该原材料${deleteId}, 是否继续?`, '提示', {
+    async deleteConfirm(deleteId) {
+      const confirm = await this.$confirm(`此操作将永久删除该条目, 是否继续?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        //确认删除方法
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
-      }).catch(() => {
-        // 取消删除方法
-        this.$message({
-          type: 'info',
-          message: '取消删除'
-        });
-      });
+      }).catch(err=>console.log(err))
+
+      if (confirm !== 'confirm') {
+        return this.$message.info('已取消删除')
+      }
+      const { data: res } = await this.$http.delete('users/', { data: { id: id } })
+      if (res.ret === 0) {
+        this.$message.success(res.meta.message)
+      }
+      this.$message.error(res.meta.message)
+      await this.getMaterialList()
+
     },
     // 获取原材料列表（提交查询）
     async getMaterialList() {
       let data = []
-      for (let i = 1; i <= 20; i++) {
+      for (let i = 1; i <= this.queryForm.pageSize; i++) {
         data.push(
             {
               id: i,
-              name:"产品名",
-              code:"产品代号",
-              type:"规格型号",
-              exeStandard:"执行标准",
-              unit:"斤",
-              productName:"成品名",
+              name: "产品名",
+              code: "产品代号",
+              type: "规格型号",
+              exeStandard: "执行标准",
+              unit: "斤",
+              productName: "成品名",
               remarks: "一些备注"
             }
         )
@@ -322,8 +309,8 @@ export default {
     },
     // 检查是否正在编辑
     editing() {
-      for(let item of this.tableData){
-        if(item.edit === true){
+      for (let item of this.tableData) {
+        if (item.edit === true) {
           return true
         }
       }
@@ -331,36 +318,13 @@ export default {
     },
     // 改变分页大小
     async handleSizeChange(pageSize) {
-      if (this.editing()) {
-        this.$confirm(`您有条目正在编辑，是否先去保存变更?`, '提示', {
-          confirmButtonText: '先去保存',
-          cancelButtonText: '直接跳转',
-          type: 'warning'
-        }).then(() => {
-          return false
-        }).catch(() => {
-          // 取消删除方法
-          this.queryForm.pageSize = pageSize
-          this.getMaterialList()
-        });
-      }
+      this.queryForm.pageSize = pageSize
+      await this.getMaterialList()
     },
     // 改变页码
     async handleCurrentChange(currentPage) {
-      if (this.editing()) {
-        this.$confirm(`您有条目正在编辑，是否先去保存变更?`, '提示', {
-          confirmButtonText: '先去保存',
-          cancelButtonText: '直接跳转',
-          type: 'warning'
-        }).then(() => {
-          return false
-        }).catch(() => {
-          // 直接跳转
-          this.queryForm.pageSize = currentPage
-          this.getMaterialList()
-        });
-      }
-
+      this.queryForm.pageSize = currentPage
+      await this.getMaterialList()
     },
     //编辑行
     editItem(row) {
