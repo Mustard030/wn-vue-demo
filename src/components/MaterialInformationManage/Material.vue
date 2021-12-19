@@ -44,22 +44,29 @@
             <span v-else>{{ scope.row.exe_standard }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="单位" prop="unit" width="100px" show-overflow-tooltip>
+        <el-table-column label="单位" prop="unit__id" width="100px" show-overflow-tooltip>
           <template v-slot="scope">
-            <el-select v-model="scope.row.unit__name" filterable v-if="scope.row.edit" size="small">
+            <el-select v-model="scope.row.unit__id" filterable v-if="scope.row.edit" size="small">
               <el-option
                   v-for="item in unitData"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.name">
+                  :value="item.id">
               </el-option>
             </el-select>
             <span v-else>{{ scope.row.unit__name }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="对应成品名称" prop="pro__name" width="100px" show-overflow-tooltip>
+        <el-table-column label="对应成品名称" prop="pro__id" width="100px" show-overflow-tooltip>
           <template v-slot="scope">
-            <el-input v-model="scope.row.pro__name" v-if="scope.row.edit" size="small"></el-input>
+            <el-select v-model="scope.row.pro__id" filterable v-if="scope.row.edit" size="small">
+              <el-option
+                  v-for="item in productData"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+              </el-option>
+            </el-select>
             <span v-else>{{ scope.row.pro__name }}</span>
           </template>
         </el-table-column>
@@ -154,8 +161,8 @@
         <el-form-item label="执行标准" prop="exe_standard">
           <el-input v-model="addForm.data.exe_standard"></el-input>
         </el-form-item>
-        <el-form-item label="单位" prop="unit">
-          <el-select v-model="addForm.data.unit" filterable>
+        <el-form-item label="单位" prop="unit" >
+          <el-select v-model="addForm.data.unit" filterable clearable>
             <el-option
                 v-for="item in unitData"
                 :key="item.value"
@@ -164,11 +171,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item prop="is_product">
-          <el-checkbox v-model="addForm.data.is_product" >此物料可作为成品使用</el-checkbox>
-        </el-form-item>
         <el-form-item label="产品名称" prop="pro">
-          <el-select v-model="addForm.data.pro" filterable :disabled="!addForm.is_product">
+          <el-select v-model="addForm.data.pro" filterable clearable>
             <el-option
                 v-for="item in productData"
                 :key="item.value"
@@ -260,8 +264,8 @@ export default {
           code: row.code,
           standards: row.standards,
           exe_standard: row.exe_standard,
-          unit: row.unit__name,
-          pro: row.pro__name,
+          unit: row.unit__id,
+          pro: row.pro__id,
           remarks: row.remarks
         }
       }
@@ -277,6 +281,8 @@ export default {
       }else{
         this.$message.error("无法预计的错误")
       }
+      await this.getProData()
+      await this.getMaterialList()
     },
     //删除确认
     async deleteConfirm(deleteId) {
@@ -293,9 +299,11 @@ export default {
       if (res.ret === 0) {
         this.$message.success("删除成功")
         await this.getMaterialList()
+        await this.getProData()
       }else{
         this.$message.error(res.msg)
       }
+
     },
     // 获取原材料列表（提交查询）
     async getMaterialList() {
@@ -336,12 +344,12 @@ export default {
     },
     // 改变分页大小
     async handleSizeChange(pageSize) {
-      this.queryForm.pageSize = pageSize
+      this.queryForm.pagesize = pageSize
       await this.getMaterialList()
     },
     // 改变页码
     async handleCurrentChange(currentPage) {
-      this.queryForm.pageSize = currentPage
+      this.queryForm.pagenum = currentPage
       await this.getMaterialList()
     },
     //编辑行
@@ -350,7 +358,12 @@ export default {
     },
 
   },
-  filters: {}
+  computed:{
+
+  },
+  filters: {
+
+  }
 
 }
 </script>
