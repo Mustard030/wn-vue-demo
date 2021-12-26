@@ -5,7 +5,8 @@ import router from './router'
 import store from './store'
 import '@/assets/css/global.css'
 import './plugins/element.js'
-
+import AFTableColumn from 'af-table-column'
+Vue.use(AFTableColumn)
 // NProgress
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -25,8 +26,8 @@ axios.interceptors.response.use(config => {
 // axios挂载到this.$http中
 Vue.prototype.$http = axios
 // 默认后端地址
-axios.defaults.baseURL = 'http://1.12.228.230:8090/'
-// axios.defaults.baseURL = 'http://127.0.0.1:8090/'
+// axios.defaults.baseURL = 'http://1.12.228.230:8090/'
+axios.defaults.baseURL = 'http://127.0.0.1:8090/'
 
 new Vue({
   router,

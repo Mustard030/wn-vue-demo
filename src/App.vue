@@ -1,7 +1,16 @@
 <template>
-  <div id="app">
+  <div id="app" style="min-width: 1200px">
     <el-container class="home-container">
-      <el-header>威能物资管理系统</el-header>
+      <el-header>
+        <span>重庆威能 | 物资管理系统</span>
+        <div>
+          <el-link icon="el-icon-s-home" :underline="false" @click="$router.push('/Home')">首页</el-link>
+          <el-divider direction="vertical"></el-divider>
+          <el-link icon="el-icon-s-tools" :underline="false">修改密码</el-link>
+          <el-divider direction="vertical"></el-divider>
+          <el-link icon="el-icon-error" :underline="false">退出</el-link>
+        </div>
+      </el-header>
       <el-container>
         <el-aside :style="{width:switchCollapseWidth}">
           <el-menu unique-opened router :collapse="isCollapse" class="el-menu-vertical-demo">
@@ -9,7 +18,7 @@
               <i class="el-icon-s-unfold" v-if="isCollapse" style="text-align: right"></i>
               <i class="el-icon-s-fold" v-else></i>
             </el-menu-item>
-            <el-menu-item index="Home"><i class="el-icon-s-home"></i><span>首页</span></el-menu-item>
+<!--            <el-menu-item index="Home"><i class="el-icon-s-home"></i><span>首页</span></el-menu-item>-->
             <el-submenu index="1">
               <template slot="title"><i class="el-icon-menu"></i><span slot="title">物资信息管理</span></template>
               <el-menu-item index="Material">原材料信息管理</el-menu-item>
@@ -98,7 +107,7 @@ export default {
 }
 
 .el-header {
-  background-color: #373d41;
+  background-color: #409EFF;
   display: flex;
   justify-content: space-between;
   font-size: 20px;
@@ -110,6 +119,12 @@ export default {
     align-items: center;
 
   }
+}
+.el-link.el-link--default{
+  color: #ffffff;
+}
+.el-link.el-link--default:hover{
+  color: #ffffff;
 }
 
 .el-aside {
@@ -126,12 +141,5 @@ export default {
   min-height: 100%;
 }
 
-#username {
-  margin-right: 20px;
-  font-size: 15px;
-}
 
-#ava {
-  margin-right: 15px;
-}
 </style>

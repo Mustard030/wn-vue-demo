@@ -1,14 +1,22 @@
 <template>
-  <div>
+  <div class="container">
     <!-- 面包屑导航栏 -->
-    <my-breadcrumb :path="['物资信息管理','原材料信息管理']"></my-breadcrumb>
+<!--    <my-breadcrumb :path="['物资信息管理','原材料信息管理']"></my-breadcrumb>-->
 
     <el-card>
+      <div slot="header">
+        <span>原材料信息管理</span>
+      </div>
       <!-- 搜索区 -->
       <el-row :gutter="20">
         <el-col :span="6">
-          <el-input v-model="queryForm.keywords" clearable>
-            <template slot="prepend">名称或代号:</template>
+          <el-input v-model="queryForm.name" clearable>
+            <template slot="prepend">名称:</template>
+          </el-input>
+        </el-col>
+        <el-col :span="6">
+          <el-input v-model="queryForm.code" clearable>
+            <template slot="prepend">代号:</template>
           </el-input>
         </el-col>
         <el-col :span="6">
@@ -21,114 +29,59 @@
       </el-row>
 
       <!-- 原材料列表区 -->
-      <el-table :data="tableData" border stripe height="700">
+      <el-table :data="tableData" border stripe height="69vh"
+                :header-cell-style="{background:'#F3F4F7',color:'#555'}"
+                :row-style="{height: '40px'}"
+                :cell-style="{padding: '0'}"
+      >
 
-        <el-table-column label="序号" prop="index" width="85px" show-overflow-tooltip></el-table-column>
-        <el-table-column label="名称" prop="name" width="150px" show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column label="代号" prop="code" width="100px" show-overflow-tooltip>
-          <template v-slot="scope">
-            <el-input v-model="scope.row.code" v-if="scope.row.edit" size="small"></el-input>
-            <span v-else>{{ scope.row.code }}</span>
-          </template>
-        </el-table-column>
+        <el-table-column label="序号" prop="index" width="50px" show-overflow-tooltip fixed></el-table-column>
+        <af-table-column label="名称" prop="name"  show-overflow-tooltip fixed></af-table-column>
+        <el-table-column label="代号" prop="code" width="100px" show-overflow-tooltip fixed></el-table-column>
         <el-table-column label="规格型号" prop="standards" width="100px" show-overflow-tooltip>
           <template v-slot="scope">
             <el-input v-model="scope.row.standards" v-if="scope.row.edit" size="small"></el-input>
             <span v-else>{{ scope.row.standards }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="执行标准" prop="exe_standard" width="100px" show-overflow-tooltip>
+        <af-table-column label="执行标准" prop="exe_standard" show-overflow-tooltip></af-table-column>
+        <el-table-column label="单位" prop="unitID" width="100px" show-overflow-tooltip>
           <template v-slot="scope">
-            <el-input v-model="scope.row.exe_standard" v-if="scope.row.edit" size="small"></el-input>
-            <span v-else>{{ scope.row.exe_standard }}</span>
+            <span>{{ unitName(scope.row.unitID) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="单位" prop="unit__id" width="100px" show-overflow-tooltip>
+        <af-table-column label="对应成品名称" prop="proID" show-overflow-tooltip>
           <template v-slot="scope">
-            <el-select v-model="scope.row.unit__id" filterable v-if="scope.row.edit" size="small">
-              <el-option
-                  v-for="item in unitData"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-              </el-option>
-            </el-select>
-            <span v-else>{{ scope.row.unit__name }}</span>
+            <span>{{ proName(scope.row.proID) }}</span>
           </template>
-        </el-table-column>
-        <el-table-column label="对应成品名称" prop="pro__id" width="100px" show-overflow-tooltip>
-          <template v-slot="scope">
-            <el-select v-model="scope.row.pro__id" filterable v-if="scope.row.edit" size="small">
-              <el-option
-                  v-for="item in productData"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-              </el-option>
-            </el-select>
-            <span v-else>{{ scope.row.pro__name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="备注" prop="remarks" show-overflow-tooltip>
-          <template v-slot="scope">
-            <el-input v-model="scope.row.remarks" v-if="scope.row.edit" size="small"></el-input>
-            <span v-else>{{ scope.row.remarks }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="150px">
+        </af-table-column>
+        <af-table-column label="备注" prop="remarks" show-overflow-tooltip>
+        </af-table-column>
+        <el-table-column label="操作" fixed="right" width="180px">
           <template v-slot="scope">
             <!-- 修改按钮 -->
-            <el-tooltip
-                class="item"
-                effect="dark"
-                content="编辑"
-                placement="top"
-                :enterable="false"
-                v-if="!scope.row.edit"
-                :key="scope.row.id"
+            <el-button
+                type="primary"
+                icon="el-icon-edit"
+                size="mini"
+                @click="editItem(scope.row)"
             >
-              <el-button
-                  type="primary"
-                  icon="el-icon-edit"
-                  size="small"
-                  @click="editItem(scope.row)"
-              >
-              </el-button>
-            </el-tooltip>
-            <!--完成修改-->
-            <el-tooltip
-                class="item"
-                effect="dark"
-                content="提交"
-                placement="top"
-                :enterable="false"
-                v-if="scope.row.edit"
-                :key="scope.row.id"
+            </el-button>
+            <!-- 详情按钮 -->
+            <el-button
+                type="warning"
+                icon="el-icon-document"
+                size="mini"
+                @click="editItem(scope.row)"
             >
-              <el-button
-                  type="success"
-                  icon="el-icon-check"
-                  size="small"
-                  @click="submitEdit(scope.row)"
-              >
-              </el-button>
-            </el-tooltip>
+            </el-button>
             <!-- 删除按钮 -->
-            <el-tooltip
-                class="item"
-                effect="dark"
-                content="删除"
-                placement="top"
-                :enterable="false"
-            >
-              <el-button
-                  type="danger"
-                  icon="el-icon-delete"
-                  size="small"
-                  @click="deleteConfirm(scope.row.id)"
-              ></el-button>
-            </el-tooltip>
+            <el-button
+                type="danger"
+                icon="el-icon-delete"
+                size="mini"
+                @click="deleteConfirm(scope.row.index)"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -138,16 +91,15 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="queryForm.pagenum"
-          :page-sizes="[10, 20, 50]"
+          :page-sizes="[15, 30, 50]"
           :page-size="queryForm.pagesize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total"
-          hide-on-single-page
       >
       </el-pagination>
     </el-card>
 
-    <el-dialog title="添加原材料或成品" :visible.sync="addFormVisible">
+    <el-dialog title="新增原材料或添加原材料" :visible.sync="addFormVisible">
       <el-form :model="addForm.data" label-width="80px" label-position="right" ref="addForm">
         <el-form-item label="名称" prop="name">
           <el-input v-model="addForm.data.name"></el-input>
@@ -161,7 +113,7 @@
         <el-form-item label="执行标准" prop="exe_standard">
           <el-input v-model="addForm.data.exe_standard"></el-input>
         </el-form-item>
-        <el-form-item label="单位" prop="unit" >
+        <el-form-item label="单位" prop="unit">
           <el-select v-model="addForm.data.unit" filterable clearable>
             <el-option
                 v-for="item in unitData"
@@ -197,11 +149,9 @@
 </template>
 
 <script>
-import MyBreadcrumb from "../HomePage/myBreadcrumb";
 
 export default {
   name: "Material",
-  components: {MyBreadcrumb},
 
   data() {
     return {
@@ -211,10 +161,11 @@ export default {
       total: 0,
       // 查询表单
       queryForm: {
-        keywords: null,
+        name: null,
+        code: null,
         isProduct: false,
         pagenum: 1,
-        pagesize: 10,
+        pagesize: 15,
       },
       // 添加表单
       addForm: {
@@ -225,7 +176,7 @@ export default {
           standards: null,
           exe_standard: null,
           unit: null,
-          is_product:false,
+          is_product: false,
           pro: null,
           remarks: null,
         }
@@ -241,18 +192,18 @@ export default {
   created() {
     this.getMaterialList()
     this.getUnitData()
-    this.getProData()
+    this.getUnbindProData()
   },
   methods: {
     // 提交添加原材料
     async submitAddMaterial() {
-      const {data:res} = await this.$http.post('material/mater_mg/',this.addForm)
-      if (res.ret === 0){
+      const {data: res} = await this.$http.post('material/mater_mg/', this.addForm)
+      if (res.ret === 0) {
         this.$message.success("添加成功")
         this.$refs.addForm.resetFields()
         this.addFormVisible = false
         await this.getMaterialList()
-        await this.getProData()
+        await this.getUnbindProData()
       }
     },
     // 提交修改
@@ -270,23 +221,23 @@ export default {
         }
       }
       const {data: res} = await this.$http.put('material/mater_mg/', modifyForm)
-      if (res.ret === 0){
+      if (res.ret === 0) {
         row.edit = !row.edit
         this.$message.success("修改成功")
-      }else if(res.ret === 1){
+      } else if (res.ret === 1) {
         await this.$confirm(res.msg, '提示', {
           confirmButtonText: '确定',
           type: 'warning'
         }).catch(err => console.log(err))
-      }else{
+      } else {
         this.$message.error("无法预计的错误")
       }
-      await this.getProData()
+      await this.getUnbindProData()
       await this.getMaterialList()
     },
     //删除确认
     async deleteConfirm(deleteId) {
-      const confirm = await this.$confirm(`此操作将永久删除该条目, 是否继续?`, '提示', {
+      const confirm = await this.$confirm(`确定要删除序号为“${deleteId}”的原材料信息？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -295,12 +246,17 @@ export default {
       if (confirm !== 'confirm') {
         return this.$message.info('已取消删除')
       }
-      const {data: res} = await this.$http.delete('material/mater_mg/', {params: {action:"del_material", id: deleteId}})
+      const {data: res} = await this.$http.delete('material/mater_mg/', {
+        params: {
+          action: "del_material",
+          id: deleteId
+        }
+      })
       if (res.ret === 0) {
         this.$message.success("删除成功")
         await this.getMaterialList()
-        await this.getProData()
-      }else{
+        await this.getUnbindProData()
+      } else {
         this.$message.error(res.msg)
       }
 
@@ -308,7 +264,9 @@ export default {
     // 获取原材料列表（提交查询）
     async getMaterialList() {
       let queryForm = {...this.queryForm, action: "list_material_filter"}
-      const {data: res} = await this.$http.get('material/mater_mg/', {params: queryForm})
+      let {data: res} = await this.$http.get('material/mater_mg/', {params: queryForm})
+      console.log(res)
+      // res = JSON.parse(res)
       res.retlist.forEach((item, index) => {
         item['edit'] = false
         item['index'] = index + 1
@@ -327,18 +285,18 @@ export default {
       const {data} = await this.$http.get('material/mater_mg/', {params: {action: 'list_unit'}})
       if (data.ret === 0) {
         this.unitData = data.retlist
-      }else{
+      } else {
         this.unitData = []
         this.$message.error("单位列表获取失败")
       }
     },
-    // 获取成品表
-    async getProData(){
-      const {data:res} = await this.$http.get('material/mater_mg/',{params:{action:"list_pro"}})
-      if (res.ret === 0){
-        this.productData = res.retlist
-      }else{
-        this.productData = []
+    // 获取未绑定成品表
+    async getUnbindProData() {
+      const {data: res} = await this.$http.get('material/mater_mg/', {params: {action: "list_pro_unbind"}})
+      if (res.ret === 0) {
+        this.unbindproductData = res.retlist
+      } else {
+        this.unbindproductData = []
         this.$message.error("获取成品列表失败")
       }
     },
@@ -352,19 +310,27 @@ export default {
       this.queryForm.pagenum = currentPage
       await this.getMaterialList()
     },
-    //编辑行
-    editItem(row) {
-      row.edit = !row.edit
+  },
+  computed: {
+    proName() {
+      return function (proID) {
+        for (let item of this.tableData) {
+          if (item.id === proID) {
+            return item.name
+          }
+        }
+      }
     },
-
+    unitName() {
+      return function (unitID) {
+        for (let item of this.unitData) {
+          if (item.id === unitID) {
+            return item.name
+          }
+        }
+      }
+    },
   },
-  computed:{
-
-  },
-  filters: {
-
-  }
-
 }
 </script>
 
@@ -372,4 +338,13 @@ export default {
 .el-checkbox {
   margin-top: 10px;
 }
+.container {
+  height: 100%;
+}
+.el-card {
+  height: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
 </style>

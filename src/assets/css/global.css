@@ -13,6 +13,15 @@ body,
     /*width: 20px;*/
     /*height: 0px;*/
 }
+.el-dialog__header {
+    background-color: #409EFF;
+}
+.el-dialog__headerbtn .el-dialog__close{
+    color: #fff !important;
+}
+.el-dialog__title{
+    color: #fff !important;
+}
 .el-breadcrumb {
     margin-bottom: 15px;
     font-size: 12px;
