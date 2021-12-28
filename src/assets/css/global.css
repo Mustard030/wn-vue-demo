@@ -51,3 +51,18 @@ body,
 .el-tabs {
     margin-top: 25px;
 }
+
+.ccbtn {
+    background-color: #fff !important;
+    border-color: #606266 !important;
+}
+.ccbtn>span{
+    color: #606266;
+}
+.ccbtn:hover {
+    background-color: #409EFF !important;
+    border-color: #409EFF !important;
+}
+.ccbtn:hover > span {
+    color: #fff;
+}

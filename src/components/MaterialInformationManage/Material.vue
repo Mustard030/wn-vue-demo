@@ -64,7 +64,7 @@
                 type="primary"
                 icon="el-icon-edit"
                 size="mini"
-                @click="editItem(scope.row)"
+                @click="openEditForm(scope.row)"
             >
             </el-button>
             <!-- 详情按钮 -->
@@ -99,8 +99,8 @@
       </el-pagination>
     </el-card>
 
-    <el-dialog title="新增原材料或添加原材料" :visible.sync="addFormVisible">
-      <el-form :model="addForm.data" label-width="80px" label-position="right" ref="addForm">
+    <el-dialog title="新增原材料或添加原材料" :visible.sync="addFormVisible" :close-on-click-modal="false">
+      <el-form :model="addForm.data" label-width="80px" label-position="right" ref="addForm" :rules="formRules">
         <el-form-item label="名称" prop="name">
           <el-input v-model="addForm.data.name"></el-input>
         </el-form-item>
@@ -145,6 +145,52 @@
         <el-button type="primary" @click="submitAddMaterial">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="修改原材料" :visible.sync="editFormVisible" :close-on-click-modal="false">
+      <el-form :model="editForm" label-width="80px" label-position="right" ref="editForm" :rules="formRules">
+        <el-form-item label="名称" prop="name">
+          <span>{{editForm.name}}</span>
+        </el-form-item>
+        <el-form-item label="代号" prop="code">
+          <el-input v-model="editForm.code"></el-input>
+        </el-form-item>
+        <el-form-item label="规格型号" prop="standards">
+          <el-input v-model="editForm.standards"></el-input>
+        </el-form-item>
+        <el-form-item label="执行标准" prop="exe_standard">
+          <el-input v-model="editForm.exe_standard"></el-input>
+        </el-form-item>
+        <el-form-item label="单位" prop="unit">
+          <el-select v-model="editForm.unit" filterable clearable>
+            <el-option
+                v-for="item in unitData"
+                :key="item.value"
+                :label="item.name"
+                :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="产品名称" prop="pro">
+          <el-select v-model="editForm.pro" filterable clearable>
+            <el-option
+                v-for="item in unbindproductData"
+                :key="item.value"
+                :label="item.name"
+                :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="备注" prop="remarks">
+          <el-input
+              type="textarea"
+              :rows="2"
+              v-model="editForm.remarks"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitEdit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -157,6 +203,8 @@ export default {
     return {
       // 添加表单显示
       addFormVisible: false,
+      // 修改表单显示
+      editFormVisible: false,
       // 数据总数
       total: 0,
       // 查询表单
@@ -181,18 +229,38 @@ export default {
           remarks: null,
         }
       },
+      // 修改表单
+      editForm: {
+        action: "edit_material",
+        id:0,
+        name: null,
+        code: null,
+        standards: null,
+        exe_standard: null,
+        unit: null,
+        is_product: false,
+        pro: null,
+        remarks: null,
+      },
+      // 表单规则
+      formRules: {
+        name: [{ required: true, message: '请填写名称', trigger: 'blur' }]
+      },
       // 返回数据
       tableData: [],
       // 单位列表
       unitData: [],
       // 成品列表
       productData: [],
+      // 未绑定成品列表
+      unbindproductData: [],
     }
   },
   created() {
     this.getMaterialList()
     this.getUnitData()
     this.getUnbindProData()
+    this.getAllProData()
   },
   methods: {
     // 提交添加原材料
@@ -206,41 +274,56 @@ export default {
         await this.getUnbindProData()
       }
     },
+    // 打开修改表单
+    openEditForm(row){
+      this.editForm.id = row.id
+      this.editForm.name = row.name
+      this.editForm.code = row.code
+      this.editForm.standards = row.standards
+      this.editForm.exe_standard = row.exe_standard
+      this.editForm.unit = row.unitID
+      this.editForm.pro = row.proID
+      this.editForm.remarks = row.remarks
+      this.editFormVisible = true
+    },
     // 提交修改
-    async submitEdit(row) {
-      let modifyForm = {
-        action: "modify_material",
-        id: row.id,
-        newdata: {
-          code: row.code,
-          standards: row.standards,
-          exe_standard: row.exe_standard,
-          unit: row.unit__id,
-          pro: row.pro__id,
-          remarks: row.remarks
+    submitEdit() {
+      this.$refs.editForm.validate(async (valid) => {
+        if (!valid) return
+        let form = {
+          action: "edit_material",
+          id: this.editForm.id,
+          newdata:{
+
+          }
         }
-      }
-      const {data: res} = await this.$http.put('material/mater_mg/', modifyForm)
-      if (res.ret === 0) {
-        row.edit = !row.edit
-        this.$message.success("修改成功")
-      } else if (res.ret === 1) {
-        await this.$confirm(res.msg, '提示', {
-          confirmButtonText: '确定',
-          type: 'warning'
-        }).catch(err => console.log(err))
-      } else {
-        this.$message.error("无法预计的错误")
-      }
-      await this.getUnbindProData()
-      await this.getMaterialList()
+        const {data: res} = await this.$http.put('material/mater_mg/', form)
+        if (res.ret === 0) {
+          row.edit = !row.edit
+          this.$message.success("修改成功")
+        } else if (res.ret === 1) {
+          await this.$confirm(res.msg, '提示', {
+            confirmButtonText: '确定',
+            type: 'warning'
+          }).catch(err => console.log(err))
+        } else {
+          this.$message.error("无法预计的错误")
+        }
+        await this.getUnbindProData()
+        await this.getAllProData()
+        await this.getMaterialList()
+      })
     },
     //删除确认
     async deleteConfirm(deleteId) {
       const confirm = await this.$confirm(`确定要删除序号为“${deleteId}”的原材料信息？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true,
+        cancelButtonClass: 'ccbtn',
+        confirmButtonClass: 'ccbtn',
+
       }).catch(err => console.log(err))
 
       if (confirm !== 'confirm') {
@@ -292,12 +375,22 @@ export default {
     },
     // 获取未绑定成品表
     async getUnbindProData() {
-      const {data: res} = await this.$http.get('material/mater_mg/', {params: {action: "list_pro_unbind"}})
+      const {data: res} = await this.$http.get('material/mater_mg/', {params: {action: "list_pro"}})
       if (res.ret === 0) {
         this.unbindproductData = res.retlist
       } else {
         this.unbindproductData = []
-        this.$message.error("获取成品列表失败")
+        this.$message.error("获取未绑定成品列表失败")
+      }
+    },
+    // 获取全部成品表
+    async getAllProData() {
+      const {data: res} = await this.$http.get('material/mater_mg/', {params: {action: "list_product"}})
+      if (res.ret === 0) {
+        this.productData = res.retlist
+      } else {
+        this.productData = []
+        this.$message.error("获取全部成品列表失败")
       }
     },
     // 改变分页大小
@@ -314,7 +407,7 @@ export default {
   computed: {
     proName() {
       return function (proID) {
-        for (let item of this.tableData) {
+        for (let item of this.productData) {
           if (item.id === proID) {
             return item.name
           }
