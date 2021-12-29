@@ -294,7 +294,12 @@ export default {
           action: "edit_material",
           id: this.editForm.id,
           newdata:{
-
+            code:this.editForm.code,
+            standards:this.editForm.standards,
+            exe_standard:this.editForm.exe_standard,
+            unit:this.editForm.unit,
+            pro:this.editForm.pro,
+            remarks:this.editForm.remarks
           }
         }
         const {data: res} = await this.$http.put('material/mater_mg/', form)
@@ -348,8 +353,6 @@ export default {
     async getMaterialList() {
       let queryForm = {...this.queryForm, action: "list_material_filter"}
       let {data: res} = await this.$http.get('material/mater_mg/', {params: queryForm})
-      console.log(res)
-      // res = JSON.parse(res)
       res.retlist.forEach((item, index) => {
         item['edit'] = false
         item['index'] = index + 1
