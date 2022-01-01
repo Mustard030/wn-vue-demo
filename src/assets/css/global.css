@@ -30,7 +30,9 @@ body,
 .el-card {
     box-shadow: 0 1 1 rgba(0, 0, 0, 0.15) !important;
 }
-
+.el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+    background-color: rgba(238, 238, 238, 0.68) !important;
+}
 .el-table {
     margin-top: 15px;
     font-size: 12px;

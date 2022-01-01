@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@/views/Home.vue'
 
 Vue.use(VueRouter)
 
@@ -8,34 +7,42 @@ Vue.use(VueRouter)
 const originalPush = VueRouter.prototype.push
 //修改原型对象中的push方法
 VueRouter.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err)
+    return originalPush.call(this, location).catch(err => err)
 }
 
 const routes = [
-  {
-    path: '/',
-    name:'Main',
-    redirect:'/Home'
-  },
-  {
-    path: '/Home',
-    name: 'Home',
-    component: Home,
-  },
-  {
-    path: '/Material',
-    name: 'Material',
-    component: () => import('@/components/MaterialInformationManage/Material'),
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  },
+    {
+        path: '/',
+        name: 'Main',
+        redirect: '/Home',
+        component: () => import('@/views/Main'),
+        children: [
+            {
+                path: '/Home',
+                name: 'Home',
+                component: () => import('@/views/Home.vue'),
+            },
+            {
+                path: '/Material',
+                name: 'Material',
+                component: () => import('@/components/MaterialInformationManage/Material'),
+            },
+            {
+                path: '/about',
+                name: 'About',
+            },
+        ]
+    },
+    {
+        path: '/Login',
+        name: 'Login',
+        component: () => import('@/views/Login'),
+    },
+
 ]
 
 const router = new VueRouter({
-  routes,
+    routes,
 })
 
 export default router
