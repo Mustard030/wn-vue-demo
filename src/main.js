@@ -26,8 +26,8 @@ axios.interceptors.response.use(config => {
 // axios挂载到this.$http中
 Vue.prototype.$http = axios
 // 默认后端地址
-axios.defaults.baseURL = 'http://1.12.228.230:8090/'
-// axios.defaults.baseURL = 'http://127.0.0.1:8090/'
+// axios.defaults.baseURL = 'http://1.12.228.230:8090/'
+axios.defaults.baseURL = 'http://127.0.0.1:8090/'
 
 new Vue({
   router,

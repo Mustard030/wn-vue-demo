@@ -28,7 +28,12 @@ body,
 }
 
 .el-card {
-    box-shadow: 0 1 1 rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15) !important;
+    display:flex;
+    flex-direction: column;
+}
+.el-card__body {
+    flex:1;
 }
 .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
     background-color: rgba(238, 238, 238, 0.68) !important;
@@ -36,6 +41,10 @@ body,
 .el-table {
     margin-top: 15px;
     font-size: 12px;
+}
+/*table元素hover项字体变色*/
+.el-table tbody td:hover {
+    color:#40a829 !important
 }
 
 .el-pagination {

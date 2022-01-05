@@ -25,7 +25,12 @@ const routes = [
             {
                 path: '/Material',
                 name: 'Material',
-                component: () => import('@/components/MaterialInformationManage/Material'),
+                component: () => import('@/views/MaterialInformationManage/Material'),
+            },
+            {
+                path: '/PurchaseList',
+                name: 'PurchaseList',
+                component: () => import('@/views/PurchaseManage/PurchaseList'),
             },
             {
                 path: '/about',

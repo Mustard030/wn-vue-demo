@@ -1,7 +1,7 @@
 export default {
     state:{
         menu:[],
-        currentMenu:null,
+        currentMenu: null,
         tabsList:[
             {
                 path:"/",

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height:100%;">
     <el-container class="home-container">
       <el-header>
         <span style="-webkit-user-select:none;user-select:none;">重庆威能 | 物资管理系统</span>
@@ -25,7 +25,8 @@
               <el-menu-item index="Stock">库点管理</el-menu-item>
             </el-submenu>
             <el-submenu index="2">
-              <template slot="title"><i class="el-icon-menu"></i><span slot="title">导航二</span></template>
+              <template slot="title"><i class="el-icon-menu"></i><span slot="title">采购管理</span></template>
+              <el-menu-item index="PurchaseList">采购合同管理</el-menu-item>
               <el-menu-item-group>
                 <template slot="title">分组一</template>
                 <el-menu-item index="2-1">选项1</el-menu-item>
@@ -56,10 +57,20 @@
             </el-submenu>
           </el-menu>
         </el-aside>
-        <el-main>
-          <keep-alive>
-            <router-view></router-view>
-          </keep-alive>
+        <el-main style="height:100%;">
+<!--          <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTab">-->
+<!--            <el-tab-pane-->
+<!--                v-for="(item, index) in editableTabs"-->
+<!--                :key="item.name"-->
+<!--                :label="item.title"-->
+<!--                :name="item.name"-->
+<!--            >-->
+              <keep-alive>
+                <router-view/>
+              </keep-alive>
+<!--            </el-tab-pane>-->
+<!--          </el-tabs>-->
+
         </el-main>
       </el-container>
     </el-container>
