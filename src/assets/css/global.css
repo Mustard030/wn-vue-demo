@@ -7,12 +7,6 @@ body,
     padding: 0;
     background-color: #eaedf1;
 }
-::-webkit-scrollbar
-{
-	/*display: none!important;*/
-    /*width: 20px;*/
-    /*height: 0px;*/
-}
 .el-dialog__header {
     background-color: #409EFF;
 }
@@ -41,12 +35,16 @@ body,
 .el-table {
     margin-top: 15px;
     font-size: 12px;
+    overflow: auto;
 }
 /*table元素hover项字体变色*/
 .el-table tbody td:hover {
-    color:#40a829 !important
+    /*color:#40a829 !important*/
 }
-
+/*table hover行变色*/
+.el-table__body tr.hover-row>td.el-table__cell{
+    background-color: #d1d2d3 !important;
+}
 .el-pagination {
     margin-top: 15px;
 }

@@ -33,6 +33,16 @@ const routes = [
                 component: () => import('@/views/PurchaseManage/PurchaseList'),
             },
             {
+                path: '/AddPurchase',
+                name: 'AddPurchase',
+                component: () => import('@/views/PurchaseManage/AddPurchase'),
+            },
+            {
+                path: '/EditPurchase',
+                name: 'EditPurchase',
+                component: () => import('@/views/PurchaseManage/EditPurchase'),
+            },
+            {
                 path: '/about',
                 name: 'About',
             },

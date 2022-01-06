@@ -1,8 +1,6 @@
 <template>
-  <div class="container">
-    <!-- 面包屑导航栏 -->
-
-    <el-card>
+  <div class="container" style="height: 100%;">
+    <el-card style="height: 100%">
       <div slot="header">
         <span>原材料信息管理</span>
       </div>
@@ -31,13 +29,17 @@
         </div>
         <!-- 原材料列表区 -->
         <div class="table-box">
-          <el-table :data="tableData" border stripe height="69vh"
+          <el-table :data="tableData" border height="68vh"
                     :header-cell-style="{background:'#F3F4F7',color:'#555'}"
                     :row-style="{height: '40px'}"
                     :cell-style="{padding: '0'}"
           >
-            <el-table-column label="序号" prop="index" width="50px" show-overflow-tooltip fixed></el-table-column>
-            <af-table-column label="名称" prop="name" show-overflow-tooltip fixed></af-table-column>
+            <el-table-column label="序号" prop="index" width="50px" fixed align="center"></el-table-column>
+            <af-table-column label="名称" prop="name" show-overflow-tooltip fixed>
+              <template v-slot="scope">
+                <el-link>{{ scope.row.name }}</el-link>
+              </template>
+            </af-table-column>
             <el-table-column label="代号" prop="code" width="100px" show-overflow-tooltip fixed></el-table-column>
             <el-table-column label="规格型号" prop="standards" width="100px" show-overflow-tooltip>
               <template v-slot="scope">
@@ -58,7 +60,7 @@
             </af-table-column>
             <el-table-column label="备注" prop="remarks" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column label="操作" fixed="right" width="180px">
+            <el-table-column label="操作" fixed="right" width="120px">
               <template v-slot="scope">
                 <!-- 修改按钮 -->
                 <el-button
@@ -69,13 +71,13 @@
                 >
                 </el-button>
                 <!-- 详情按钮 -->
-                <el-button
-                    type="warning"
-                    icon="el-icon-document"
-                    size="mini"
-                    @click="editItem(scope.row)"
-                >
-                </el-button>
+<!--                <el-button-->
+<!--                    type="warning"-->
+<!--                    icon="el-icon-document"-->
+<!--                    size="mini"-->
+<!--                    @click="editItem(scope.row)"-->
+<!--                >-->
+<!--                </el-button>-->
                 <!-- 删除按钮 -->
                 <el-button
                     type="danger"
@@ -462,10 +464,13 @@ export default {
 .main-container {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
 .table-box {
   flex: 1;
+  height: 100%;
 }
 
 
