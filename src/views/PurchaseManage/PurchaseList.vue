@@ -76,16 +76,97 @@
         <div class="table-box">
           <el-table :data="tableData" border stripe
                     :header-cell-style="{background:'#F3F4F7',color:'#555'}"
-                    :row-style="{height: '80px'}"
+                    :row-style="{height: '90px'}"
                     :cell-style="{padding: '0'}"
           >
-            <el-table-column label="序号" prop="index" width="50px" show-overflow-tooltip></el-table-column>
-            <el-table-column label="序号" prop="index" width="50px" show-overflow-tooltip></el-table-column>
-            <el-table-column label="序号" prop="index" width="50px" show-overflow-tooltip></el-table-column>
-            <el-table-column label="序号" prop="index" width="50px" show-overflow-tooltip></el-table-column>
-            <el-table-column label="序号" prop="index" width="50px" show-overflow-tooltip></el-table-column>
-            <el-table-column label="序号" prop="index" width="50px" show-overflow-tooltip></el-table-column>
-            <el-table-column label="序号" prop="index" width="50px" show-overflow-tooltip></el-table-column>
+            <el-table-column label="序号" prop="index" width="50px" fixed></el-table-column>
+            <el-table-column label="供应商" prop="supplier" width="80px" show-overflow-tooltip fixed></el-table-column>
+            <el-table-column label="合同编号" prop="contract_id" width="120px" show-overflow-tooltip fixed></el-table-column>
+            <el-table-column label="合同名称" prop="name" width="150px" show-overflow-tooltip fixed></el-table-column>
+            <el-table-column label="签订日期" prop="date" width="100px" show-overflow-tooltip></el-table-column>
+            <el-table-column label="签订地点" prop="place" width="130px" show-overflow-tooltip></el-table-column>
+            <el-table-column label="合同金额" prop="money" width="80px" show-overflow-tooltip></el-table-column>
+            <el-table-column label="合同附件" prop="appendix" width="80px" show-overflow-tooltip>
+              <template v-slot="scope">
+                <el-button icon="el-icon-document" size="small" type="primary">
+
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column label="合同状态" prop="state" width="80px" show-overflow-tooltip></el-table-column>
+            <el-table-column label="备注" prop="remarks" width="150px" show-overflow-tooltip></el-table-column>
+            <el-table-column label="操作" width="130px" fixed="right">
+              <template v-slot="scope">
+                <el-row :gutter="24">
+                  <el-col :span="12" style="margin-bottom:10px;">
+                    <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="详细信息"
+                        placement="top"
+                        :enterable="false"
+                    >
+                      <el-button
+                          type="warning"
+                          icon="el-icon-document"
+                          size="small"
+                          @click="detailPurchase(scope.row.contract_id)"
+                      />
+                    </el-tooltip>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="更改"
+                        placement="top"
+                        :enterable="false"
+                    >
+                      <el-button
+                          type="primary"
+                          icon="el-icon-edit"
+                          size="small"
+                          @click="editPurchase(scope.row.contract_id)"
+                      />
+                    </el-tooltip>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="24">
+                  <el-col :span="12">
+                    <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="删除"
+                        placement="top"
+                        :enterable="false"
+                    >
+                      <el-button
+                          type="danger"
+                          icon="el-icon-delete"
+                          size="small"
+                          @click="deletePurchase(scope.row.contract_id)"
+                      />
+                    </el-tooltip>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="终止"
+                        placement="top"
+                        :enterable="false"
+                    >
+                      <el-button
+                          type="danger"
+                          icon="el-icon-switch-button"
+                          size="small"
+                          @click="stopPurchase(scope.row.contract_id)"
+                      />
+                    </el-tooltip>
+                  </el-col>
+                </el-row>
+              </template>
+            </el-table-column>
 
           </el-table>
         </div>
@@ -147,23 +228,45 @@ export default {
         pagenum: 1, // 页数
         pagesize: 15, // 每页大小
       },
-      tableData: [],
-      total:0, // 表格数据条数
+      tableData: [
+        {
+          index:1,
+          contract_id: 1,
+          supplier: "supplier",
+          name: "name",
+          date: "2021-01-28",
+          place: "地点",
+          money: 10000,
+          appendix: {
+            name:"文件名",
+            url:"文件路径"
+          },
+          remarks: "备注",
+          state: "状态",
+        }
+      ],
+      total: 0, // 表格数据条数
     }
   },
   created() {
-    this.getPurchaseList()
+    // this.getPurchaseList()
   },
   mounted() {
   },
 
   methods: {
-    async getPurchaseList(){
+    async getPurchaseList() {
       console.log(this.queryForm)
-      const {data: res} = await this.$http.get('purchase/contract/',{params:this.queryForm})
+      const {data: res} = await this.$http.get('purchase/contract/', {params: this.queryForm})
     },
-    async handleSizeChange(){},
-    async handleCurrentChange(){},
+    async handleSizeChange() {
+    },
+    async handleCurrentChange() {
+    },
+    detailPurchase(contract_id){},
+    editPurchase(contract_id){},
+    deletePurchase(contract_id){},
+    stopPurchase(contract_id){},
 
   },
   computed: {},
@@ -175,13 +278,18 @@ export default {
 .second-row {
   display: flex;
 }
-.main-container{
+
+.main-container {
   display: flex;
   flex-direction: column;
-  justify-content:space-between;
-  height:100%;
+  justify-content: space-between;
+  height: 100%;
 }
+
 .table-box {
   height: 100%;
+}
+.cell .el-row{
+  margin-bottom: 5px;
 }
 </style>
