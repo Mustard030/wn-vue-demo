@@ -64,7 +64,7 @@
                 </el-col>
                 <el-col :span="3">
                   <el-form-item>
-                    <el-button type="primary" icon="el-icon-circle-plus" @click="goAddPurchase" size="small">新增
+                    <el-button type="primary" icon="el-icon-circle-plus" @click="addPurchase" size="small">新增
                     </el-button>
                   </el-form-item>
                 </el-col>
@@ -74,22 +74,24 @@
         </div>
         <!--表单区域-->
         <div class="table-box">
-          <el-table :data="tableData" border
+          <el-table :data="tableData" border height="58vh"
                     :header-cell-style="{background:'#F3F4F7',color:'#555'}"
                     :row-style="{height: '90px'}"
                     :cell-style="{padding: '0'}">
             <el-table-column label="序号" prop="index" width="50px" fixed align="center"></el-table-column>
             <el-table-column label="供应商" prop="supplier" show-overflow-tooltip fixed></el-table-column>
             <el-table-column label="合同编号" prop="contract_id" show-overflow-tooltip fixed></el-table-column>
-            <el-table-column label="合同名称" prop="name" show-overflow-tooltip fixed></el-table-column>
+            <el-table-column label="合同名称" prop="name" show-overflow-tooltip fixed>
+              <template v-slot="scope">
+                <el-link @click="detailPurchase">{{ scope.row.name }}</el-link>
+              </template>
+            </el-table-column>
             <el-table-column label="签订日期" prop="date" width="100px" show-overflow-tooltip></el-table-column>
             <el-table-column label="签订地点" prop="place" show-overflow-tooltip></el-table-column>
             <el-table-column label="合同金额" prop="money" width="80px" show-overflow-tooltip></el-table-column>
             <el-table-column label="合同附件" prop="appendix" width="80px" show-overflow-tooltip align="center">
               <template v-slot="scope">
-                <el-button icon="el-icon-document" size="small" type="primary">
-
-                </el-button>
+                <el-button icon="el-icon-document" size="small" type="primary" @click="appendixDialog(scope.row)"></el-button>
               </template>
             </el-table-column>
             <el-table-column label="合同状态" prop="state" width="80px" show-overflow-tooltip></el-table-column>
@@ -183,6 +185,11 @@
         </div>
       </div>
     </el-card>
+
+    <!--  弹窗区域  -->
+      <el-dialog title="合同附件列表" :visible.sync="appendixDialogVisible" :close-on-click-modal="false">
+
+      </el-dialog>
   </div>
 </template>
 
@@ -229,7 +236,6 @@ export default {
       },
       tableData: [
         {
-          index:1,
           contract_id: 1,
           supplier: "supplier",
           name: "name",
@@ -237,14 +243,13 @@ export default {
           place: "地点",
           money: 10000,
           appendix: {
-            name:"文件名",
-            url:"文件路径"
+            name: "文件名",
+            url: "文件路径"
           },
           remarks: "备注",
           state: "状态",
         },
         {
-          index:1,
           contract_id: 2,
           supplier: "supplier",
           name: "name",
@@ -252,13 +257,14 @@ export default {
           place: "地点",
           money: 10000,
           appendix: {
-            name:"文件名",
-            url:"文件路径"
+            name: "文件名",
+            url: "文件路径"
           },
           remarks: "备注",
           state: "状态",
-        },
+        }, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
       ],
+      appendixDialogVisible:false,
       total: 0, // 表格数据条数
     }
   },
@@ -272,18 +278,33 @@ export default {
     async getPurchaseList() {
       console.log(this.queryForm)
       const {data: res} = await this.$http.get('purchase/contract/', {params: this.queryForm})
+      res.retlist.forEach((item, index) => {
+        item['index'] = index + 1
+      })
     },
-    async handleSizeChange() {
+    async handleSizeChange(pageSize) {
+      this.queryForm.pagesize = pageSize
+      await this.getPurchaseList()
     },
-    async handleCurrentChange() {
+    async handleCurrentChange(currentPage) {
+      this.queryForm.pagenum = currentPage
+      await this.getPurchaseList()
     },
-    goAddPurchase(){this.$router.push({name:'AddPurchase'})},
-    detailPurchase(contract_id){},
-    editPurchase(contract_id){
-      this.$router.push({name:'EditPurchase',params: {contract_id}})
+    appendixDialog(row){
+      this.appendixDialogVisible = true
     },
-    deletePurchase(contract_id){},
-    stopPurchase(contract_id){},
+    addPurchase() {
+      this.$router.push({name: 'AddPurchase'})
+    },
+    detailPurchase(contract_id) {
+    },
+    editPurchase(contract_id) {
+      this.$router.push({name: 'EditPurchase', params: {contract_id}})
+    },
+    deletePurchase(contract_id) {
+    },
+    stopPurchase(contract_id) {
+    },
 
   },
   computed: {},
@@ -306,7 +327,9 @@ export default {
 .table-box {
   height: 100%;
 }
-.cell .el-row{
+
+.cell .el-row {
   margin-bottom: 5px;
 }
+
 </style>

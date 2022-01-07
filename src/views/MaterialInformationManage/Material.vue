@@ -29,65 +29,67 @@
         </div>
         <!-- 原材料列表区 -->
         <div class="table-box">
-          <el-table :data="tableData" border height="68vh"
-                    :header-cell-style="{background:'#F3F4F7',color:'#555'}"
-                    :row-style="{height: '40px'}"
-                    :cell-style="{padding: '0'}"
-          >
-            <el-table-column label="序号" prop="index" width="50px" fixed align="center"></el-table-column>
-            <af-table-column label="名称" prop="name" show-overflow-tooltip fixed>
-              <template v-slot="scope">
-                <el-link>{{ scope.row.name }}</el-link>
-              </template>
-            </af-table-column>
-            <el-table-column label="代号" prop="code" width="100px" show-overflow-tooltip fixed></el-table-column>
-            <el-table-column label="规格型号" prop="standards" width="100px" show-overflow-tooltip>
-              <template v-slot="scope">
-                <el-input v-model="scope.row.standards" v-if="scope.row.edit" size="small"></el-input>
-                <span v-else>{{ scope.row.standards }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="执行标准" prop="exe_standard" show-overflow-tooltip></el-table-column>
-            <el-table-column label="单位" prop="unitID" width="100px" show-overflow-tooltip>
-              <template v-slot="scope">
-                <span>{{ unitName(scope.row.unitID) }}</span>
-              </template>
-            </el-table-column>
-            <af-table-column label="对应成品名称" prop="proID" show-overflow-tooltip>
-              <template v-slot="scope">
-                <span>{{ proName(scope.row.proID) }}</span>
-              </template>
-            </af-table-column>
-            <el-table-column label="备注" prop="remarks" show-overflow-tooltip>
-            </el-table-column>
-            <el-table-column label="操作" fixed="right" width="120px">
-              <template v-slot="scope">
-                <!-- 修改按钮 -->
-                <el-button
-                    type="primary"
-                    icon="el-icon-edit"
-                    size="mini"
-                    @click="openEditForm(scope.row)"
-                >
-                </el-button>
-                <!-- 详情按钮 -->
-<!--                <el-button-->
-<!--                    type="warning"-->
-<!--                    icon="el-icon-document"-->
-<!--                    size="mini"-->
-<!--                    @click="editItem(scope.row)"-->
-<!--                >-->
-<!--                </el-button>-->
-                <!-- 删除按钮 -->
-                <el-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    size="mini"
-                    @click="deleteConfirm(scope.row)"
-                ></el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+<!--          <el-scrollbar style="height:100%;">-->
+            <el-table :data="tableData" border height="67vh"
+                      :header-cell-style="{background:'#F3F4F7',color:'#555'}"
+                      :row-style="{height: '40px'}"
+                      :cell-style="{padding: '0'}"
+            >
+              <el-table-column label="序号" prop="index" width="50px" fixed align="center"></el-table-column>
+              <af-table-column label="名称" prop="name" show-overflow-tooltip fixed>
+                <template v-slot="scope">
+                  <el-link>{{ scope.row.name }}</el-link>
+                </template>
+              </af-table-column>
+              <el-table-column label="代号" prop="code" width="100px" show-overflow-tooltip fixed></el-table-column>
+              <el-table-column label="规格型号" prop="standards" width="100px" show-overflow-tooltip>
+                <template v-slot="scope">
+                  <el-input v-model="scope.row.standards" v-if="scope.row.edit" size="small"></el-input>
+                  <span v-else>{{ scope.row.standards }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="执行标准" prop="exe_standard" show-overflow-tooltip></el-table-column>
+              <el-table-column label="单位" prop="unitID" width="80px" show-overflow-tooltip>
+                <template v-slot="scope">
+                  <span>{{ unitName(scope.row.unitID) }}</span>
+                </template>
+              </el-table-column>
+              <af-table-column label="对应成品名称" prop="proID" show-overflow-tooltip>
+                <template v-slot="scope">
+                  <span>{{ proName(scope.row.proID) }}</span>
+                </template>
+              </af-table-column>
+              <el-table-column label="备注" prop="remarks" show-overflow-tooltip>
+              </el-table-column>
+              <el-table-column label="操作" fixed="right" width="120px">
+                <template v-slot="scope">
+                  <!-- 修改按钮 -->
+                  <el-button
+                      type="primary"
+                      icon="el-icon-edit"
+                      size="mini"
+                      @click="openEditForm(scope.row)"
+                  >
+                  </el-button>
+                  <!-- 详情按钮 -->
+                  <!--                <el-button-->
+                  <!--                    type="warning"-->
+                  <!--                    icon="el-icon-document"-->
+                  <!--                    size="mini"-->
+                  <!--                    @click="editItem(scope.row)"-->
+                  <!--                >-->
+                  <!--                </el-button>-->
+                  <!-- 删除按钮 -->
+                  <el-button
+                      type="danger"
+                      icon="el-icon-delete"
+                      size="mini"
+                      @click="deleteConfirm(scope.row)"
+                  ></el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+<!--          </el-scrollbar>-->
         </div>
         <!--分页区域 -->
         <div class="page-box">
@@ -130,9 +132,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
-          <el-checkbox v-model="addForm.data.is_product" @change="clearPro">此物料可作为成品使用</el-checkbox>
-        </el-form-item>
         <el-form-item label="产品名称" prop="pro">
           <el-select v-model="addForm.data.pro" filterable clearable :disabled="!addForm.data.is_product">
             <el-option
@@ -142,6 +141,7 @@
                 :value="item.id">
             </el-option>
           </el-select>
+          <el-checkbox v-model="addForm.data.is_product" @change="clearPro">此物料可作为成品使用</el-checkbox>
         </el-form-item>
         <el-form-item label="备注" prop="remarks">
           <el-input
@@ -364,7 +364,6 @@ export default {
       let queryForm = {...this.queryForm, action: "list_material_filter"}
       let {data: res} = await this.$http.get('material/mater_mg/', {params: queryForm})
       res.retlist.forEach((item, index) => {
-        item['edit'] = false
         item['index'] = index + 1
       })
       if (res.ret === 0 || res.ret === 1) {
@@ -447,8 +446,12 @@ export default {
 </script>
 
 <style scoped>
-.el-checkbox {
+.el-col > .el-checkbox {
   margin-top: 10px;
+}
+
+.el-form-item__content > .el-checkbox {
+  margin-left: 20px;
 }
 
 .container {
@@ -462,6 +465,7 @@ export default {
 }
 
 .main-container {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -470,7 +474,7 @@ export default {
 
 .table-box {
   flex: 1;
-  height: 100%;
+  /*height: 100%;*/
 }
 
 
