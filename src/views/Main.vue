@@ -19,7 +19,9 @@
               <i class="el-icon-s-fold" v-else></i>
             </el-menu-item>
             <el-submenu index="1">
-              <template slot="title"><i class="el-icon-menu"></i><span slot="title">物资信息管理</span></template>
+              <template slot="title">
+                <i class="el-icon-menu"></i><span slot="title">物资信息管理</span>
+              </template>
               <el-menu-item index="Material">原材料信息管理</el-menu-item>
               <el-menu-item index="ProdInfo">产品信息管理</el-menu-item>
               <el-menu-item index="Stock">库点管理</el-menu-item>
