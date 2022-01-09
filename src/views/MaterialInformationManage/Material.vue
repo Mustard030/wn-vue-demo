@@ -29,67 +29,67 @@
         </div>
         <!-- 原材料列表区 -->
         <div class="table-box">
-<!--          <el-scrollbar style="height:100%;">-->
-            <el-table :data="tableData" border height="67vh"
-                      :header-cell-style="{background:'#F3F4F7',color:'#555'}"
-                      :row-style="{height: '40px'}"
-                      :cell-style="{padding: '0'}"
-            >
-              <el-table-column label="序号" prop="index" width="50px" fixed align="center"></el-table-column>
-              <af-table-column label="名称" prop="name" show-overflow-tooltip fixed>
-                <template v-slot="scope">
-                  <el-link>{{ scope.row.name }}</el-link>
-                </template>
-              </af-table-column>
-              <el-table-column label="代号" prop="code" width="100px" show-overflow-tooltip fixed></el-table-column>
-              <el-table-column label="规格型号" prop="standards" width="100px" show-overflow-tooltip>
-                <template v-slot="scope">
-                  <el-input v-model="scope.row.standards" v-if="scope.row.edit" size="small"></el-input>
-                  <span v-else>{{ scope.row.standards }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="执行标准" prop="exe_standard" show-overflow-tooltip></el-table-column>
-              <el-table-column label="单位" prop="unitID" width="80px" show-overflow-tooltip>
-                <template v-slot="scope">
-                  <span>{{ unitName(scope.row.unitID) }}</span>
-                </template>
-              </el-table-column>
-              <af-table-column label="对应成品名称" prop="proID" show-overflow-tooltip>
-                <template v-slot="scope">
-                  <span>{{ proName(scope.row.proID) }}</span>
-                </template>
-              </af-table-column>
-              <el-table-column label="备注" prop="remarks" show-overflow-tooltip>
-              </el-table-column>
-              <el-table-column label="操作" fixed="right" width="120px">
-                <template v-slot="scope">
-                  <!-- 修改按钮 -->
-                  <el-button
-                      type="primary"
-                      icon="el-icon-edit"
-                      size="mini"
-                      @click="openEditForm(scope.row)"
-                  >
-                  </el-button>
-                  <!-- 详情按钮 -->
-                  <!--                <el-button-->
-                  <!--                    type="warning"-->
-                  <!--                    icon="el-icon-document"-->
-                  <!--                    size="mini"-->
-                  <!--                    @click="editItem(scope.row)"-->
-                  <!--                >-->
-                  <!--                </el-button>-->
-                  <!-- 删除按钮 -->
-                  <el-button
-                      type="danger"
-                      icon="el-icon-delete"
-                      size="mini"
-                      @click="deleteConfirm(scope.row)"
-                  ></el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-<!--          </el-scrollbar>-->
+          <!--          <el-scrollbar style="height:100%;">-->
+          <el-table :data="tableData" border height="67vh"
+                    :header-cell-style="{background:'#F3F4F7',color:'#555'}"
+                    :row-style="{height: '40px'}"
+                    :cell-style="{padding: '0'}"
+          >
+            <el-table-column label="序号" prop="index" width="50px" fixed align="center"></el-table-column>
+            <af-table-column label="名称" prop="name" show-overflow-tooltip fixed>
+              <template v-slot="scope">
+                <el-link>{{ scope.row.name }}</el-link>
+              </template>
+            </af-table-column>
+            <el-table-column label="代号" prop="code" width="100px" show-overflow-tooltip fixed></el-table-column>
+            <el-table-column label="规格型号" prop="standards" width="100px" show-overflow-tooltip>
+              <template v-slot="scope">
+                <el-input v-model="scope.row.standards" v-if="scope.row.edit" size="small"></el-input>
+                <span v-else>{{ scope.row.standards }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="执行标准" prop="exe_standard" show-overflow-tooltip></el-table-column>
+            <el-table-column label="单位" prop="unitID" width="80px" show-overflow-tooltip>
+              <template v-slot="scope">
+                <span>{{ unitName(scope.row.unitID) }}</span>
+              </template>
+            </el-table-column>
+            <af-table-column label="对应成品名称" prop="proID" show-overflow-tooltip>
+              <template v-slot="scope">
+                <span>{{ proName(scope.row.proID) }}</span>
+              </template>
+            </af-table-column>
+            <el-table-column label="备注" prop="remarks" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column label="操作" fixed="right" width="120px">
+              <template v-slot="scope">
+                <!-- 修改按钮 -->
+                <el-button
+                    type="primary"
+                    icon="el-icon-edit"
+                    size="mini"
+                    @click="openEditForm(scope.row)"
+                >
+                </el-button>
+                <!-- 详情按钮 -->
+                <!--                <el-button-->
+                <!--                    type="warning"-->
+                <!--                    icon="el-icon-document"-->
+                <!--                    size="mini"-->
+                <!--                    @click="editItem(scope.row)"-->
+                <!--                >-->
+                <!--                </el-button>-->
+                <!-- 删除按钮 -->
+                <el-button
+                    type="danger"
+                    icon="el-icon-delete"
+                    size="mini"
+                    @click="deleteConfirm(scope.row)"
+                ></el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--          </el-scrollbar>-->
         </div>
         <!--分页区域 -->
         <div class="page-box">
@@ -108,7 +108,7 @@
     </el-card>
 
     <!--  弹窗区  -->
-    <el-dialog title="新增原材料或添加原材料" :visible.sync="addFormVisible" :close-on-click-modal="false">
+    <el-dialog title="新增原材料" :visible.sync="addFormVisible" :close-on-click-modal="false" customClass="customWidth">
       <el-form :model="addForm.data" label-width="80px" label-position="right" ref="addForm" :rules="formRules">
         <el-form-item label="名称" prop="name">
           <el-input v-model="addForm.data.name"></el-input>
@@ -133,6 +133,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="产品名称" prop="pro">
+          <el-checkbox v-model="addForm.data.is_product" @change="clearPro">此物料可作为成品使用</el-checkbox>
           <el-select v-model="addForm.data.pro" filterable clearable :disabled="!addForm.data.is_product">
             <el-option
                 v-for="item in productData"
@@ -141,7 +142,7 @@
                 :value="item.id">
             </el-option>
           </el-select>
-          <el-checkbox v-model="addForm.data.is_product" @change="clearPro">此物料可作为成品使用</el-checkbox>
+
         </el-form-item>
         <el-form-item label="备注" prop="remarks">
           <el-input
@@ -155,10 +156,11 @@
         <el-button type="primary" @click="submitAddMaterial">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="修改原材料" :visible.sync="editFormVisible" :close-on-click-modal="false">
+    <el-dialog title="修改原材料" :visible.sync="editFormVisible" :close-on-click-modal="false" customClass="customWidth">
       <el-form :model="editForm" label-width="80px" label-position="right" ref="editForm" :rules="formRules">
         <el-form-item label="名称" prop="name">
-          <span>{{ editForm.name }}</span>
+          <el-input v-model="editForm.name"></el-input>
+          <!--          <span>{{ editForm.name }}</span>-->
         </el-form-item>
         <el-form-item label="代号" prop="code">
           <el-input v-model="editForm.code"></el-input>
@@ -180,14 +182,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="产品名称" prop="pro">
-          <el-select v-model="editForm.pro" filterable clearable>
+          <el-checkbox v-model="editForm.is_product" @change="clearPro">此物料可作为成品使用</el-checkbox>
+          <el-select v-model="editForm.pro" filterable clearable :disabled="!editForm.is_product">
             <el-option
-                v-for="item in unbindproductData"
+                v-for="item in editUnbindProductData"
                 :key="item.value"
                 :label="item.name"
                 :value="item.id">
             </el-option>
           </el-select>
+
         </el-form-item>
         <el-form-item label="备注" prop="remarks">
           <el-input
@@ -254,7 +258,8 @@ export default {
       },
       // 表单规则
       formRules: {
-        name: [{required: true, message: '请填写名称', trigger: 'blur'}]
+        name: [{required: true, message: '请填写名称', trigger: 'blur'}],
+        unit: [{required: true, message: '请选择单位', trigger: 'blur'}],
       },
       // 返回数据
       tableData: [],
@@ -264,6 +269,8 @@ export default {
       productData: [],
       // 未绑定成品列表
       unbindproductData: [],
+      // 编辑用未绑定成品列表
+      editUnbindProductData: [],
     }
   },
   created() {
@@ -292,9 +299,24 @@ export default {
       this.editForm.standards = row.standards
       this.editForm.exe_standard = row.exe_standard
       this.editForm.unit = row.unitID
+      this.editForm.is_product = row.proID !== ''
       this.editForm.pro = row.proID
       this.editForm.remarks = row.remarks
       this.editFormVisible = true
+      this.refreshEditUnbindProductData(row.proID)
+    },
+    // 更改编辑用未绑定成品列表
+    refreshEditUnbindProductData(proID) {
+      this.editUnbindProductData = []
+      for (let item of this.unbindproductData) {
+        this.editUnbindProductData.push(item)
+      }
+
+      for (let item of this.productData) {
+        if (item.id === proID) {
+          this.editUnbindProductData.push(item)
+        }
+      }
     },
     // 提交修改
     submitEdit() {
@@ -419,6 +441,7 @@ export default {
     clearPro(value) {
       if (!value) {
         this.addForm.data.pro = ''
+        this.editForm.pro = ''
       }
     }
   },
@@ -451,7 +474,7 @@ export default {
 }
 
 .el-form-item__content > .el-checkbox {
-  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .container {
@@ -478,4 +501,9 @@ export default {
 }
 
 
+</style>
+<style>
+.customWidth {
+  width: 600px;
+}
 </style>

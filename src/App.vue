@@ -44,10 +44,12 @@ export default {
 
 .el-aside {
   background-color: #EAEDF1;
+  height: calc(100vh - 60px);
 }
 
 .el-main {
   height: 100%;
+  height: calc(100vh - 60px);
   background-color: #EAEDF1;
 }
 
