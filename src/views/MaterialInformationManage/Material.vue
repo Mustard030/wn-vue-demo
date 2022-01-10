@@ -4,35 +4,38 @@
       <div slot="header">
         <span>原材料信息管理</span>
       </div>
-      <!-- 搜索区 -->
+
       <div class="main-container">
+        <!-- 搜索区 -->
         <div class="search-box">
-          <el-row :gutter="20">
-            <el-col :span="6">
-              <el-input v-model="queryForm.name" clearable>
-                <template slot="prepend">名称:</template>
-              </el-input>
-            </el-col>
-            <el-col :span="6">
-              <el-input v-model="queryForm.code" clearable>
-                <template slot="prepend">代号:</template>
-              </el-input>
-            </el-col>
-            <el-col :span="6">
-              <el-checkbox v-model="queryForm.isProduct">仅显示可作为成品使用的原材料</el-checkbox>
-            </el-col>
-            <el-col :span="6">
-              <el-button type="primary" icon="el-icon-search" @click="getMaterialList">查询</el-button>
-              <el-button type="primary" icon="el-icon-circle-plus" @click="addFormVisible=true">新增</el-button>
-            </el-col>
-          </el-row>
+          <el-form label-position="right" label-width="50px">
+            <el-row :gutter="20">
+              <el-col :span="5">
+                <el-form-item label="名称:">
+                  <el-input v-model="queryForm.name" clearable size="mini"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="5">
+                <el-form-item label="代号:">
+                  <el-input v-model="queryForm.code" clearable size="mini"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-checkbox v-model="queryForm.isProduct" size="mini">仅显示可作为成品使用的原材料</el-checkbox>
+              </el-col>
+              <el-col :span="6">
+                <el-button type="primary" icon="el-icon-search" @click="getMaterialList" size="mini">查询</el-button>
+                <el-button type="primary" icon="el-icon-circle-plus" @click="addFormVisible=true" size="mini">新增
+                </el-button>
+              </el-col>
+            </el-row>
+          </el-form>
         </div>
         <!-- 原材料列表区 -->
         <div class="table-box">
-          <!--          <el-scrollbar style="height:100%;">-->
           <el-table :data="tableData" border height="67vh"
                     :header-cell-style="{background:'#F3F4F7',color:'#555'}"
-                    :row-style="{height: '40px'}"
+                    :row-style="{height: '30px'}"
                     :cell-style="{padding: '0'}"
           >
             <el-table-column label="序号" prop="index" width="50px" fixed align="center"></el-table-column>
@@ -71,14 +74,6 @@
                     @click="openEditForm(scope.row)"
                 >
                 </el-button>
-                <!-- 详情按钮 -->
-                <!--                <el-button-->
-                <!--                    type="warning"-->
-                <!--                    icon="el-icon-document"-->
-                <!--                    size="mini"-->
-                <!--                    @click="editItem(scope.row)"-->
-                <!--                >-->
-                <!--                </el-button>-->
                 <!-- 删除按钮 -->
                 <el-button
                     type="danger"
@@ -89,7 +84,6 @@
               </template>
             </el-table-column>
           </el-table>
-          <!--          </el-scrollbar>-->
         </div>
         <!--分页区域 -->
         <div class="page-box">
@@ -97,7 +91,7 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               :current-page="queryForm.pagenum"
-              :page-sizes="[15, 30, 50]"
+              :page-sizes="[20, 40, 60, 80, 100]"
               :page-size="queryForm.pagesize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -109,21 +103,21 @@
 
     <!--  弹窗区  -->
     <el-dialog title="新增原材料" :visible.sync="addFormVisible" :close-on-click-modal="false" customClass="customWidth">
-      <el-form :model="addForm.data" label-width="80px" label-position="right" ref="addForm" :rules="formRules">
+      <el-form :model="addForm.data" label-width="80px" label-position="right" ref="addForm" :rules="formRules" size="mini">
         <el-form-item label="名称" prop="name">
-          <el-input v-model="addForm.data.name"></el-input>
+          <el-input v-model="addForm.data.name" size="mini"/>
         </el-form-item>
         <el-form-item label="代号" prop="code">
-          <el-input v-model="addForm.data.code"></el-input>
+          <el-input v-model="addForm.data.code" size="mini"/>
         </el-form-item>
         <el-form-item label="规格型号" prop="standards">
-          <el-input v-model="addForm.data.standards"></el-input>
+          <el-input v-model="addForm.data.standards" size="mini"/>
         </el-form-item>
         <el-form-item label="执行标准" prop="exe_standard">
-          <el-input v-model="addForm.data.exe_standard"></el-input>
+          <el-input v-model="addForm.data.exe_standard" size="mini"/>
         </el-form-item>
         <el-form-item label="单位" prop="unit">
-          <el-select v-model="addForm.data.unit" filterable clearable>
+          <el-select v-model="addForm.data.unit" filterable clearable size="mini">
             <el-option
                 v-for="item in unitData"
                 :key="item.value"
@@ -134,7 +128,7 @@
         </el-form-item>
         <el-form-item label="产品名称" prop="pro">
           <el-checkbox v-model="addForm.data.is_product" @change="clearPro">此物料可作为成品使用</el-checkbox>
-          <el-select v-model="addForm.data.pro" filterable clearable :disabled="!addForm.data.is_product">
+          <el-select v-model="addForm.data.pro" filterable clearable :disabled="!addForm.data.is_product" size="mini">
             <el-option
                 v-for="item in productData"
                 :key="item.value"
@@ -148,7 +142,8 @@
           <el-input
               type="textarea"
               :rows="2"
-              v-model="addForm.data.remarks"></el-input>
+              v-model="addForm.data.remarks"
+              size="mini"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -157,7 +152,7 @@
       </div>
     </el-dialog>
     <el-dialog title="修改原材料" :visible.sync="editFormVisible" :close-on-click-modal="false" customClass="customWidth">
-      <el-form :model="editForm" label-width="80px" label-position="right" ref="editForm" :rules="formRules">
+      <el-form :model="editForm" label-width="80px" label-position="right" ref="editForm" :rules="formRules" size="mini">
         <el-form-item label="名称" prop="name">
           <el-input v-model="editForm.name"></el-input>
           <!--          <span>{{ editForm.name }}</span>-->
@@ -227,7 +222,7 @@ export default {
         code: null,
         isProduct: false,
         pagenum: 1,
-        pagesize: 15,
+        pagesize: 20,
       },
       // 添加表单
       addForm: {
@@ -353,7 +348,7 @@ export default {
     },
     //删除确认
     async deleteConfirm(row) {
-      const confirm = await this.$confirm(`确定要删除序号为“${row.index}”的原材料信息？`, '提示', {
+      const confirm = await this.$confirm(`确定要删除名称为“${row.name}”，代号为“${row.code}”的原材料信息？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
@@ -473,8 +468,16 @@ export default {
   margin-top: 10px;
 }
 
+.el-col > .el-button {
+  margin-top: 5px;
+}
+
 .el-form-item__content > .el-checkbox {
   margin-right: 20px;
+}
+
+.el-form-item {
+  margin-bottom: 13px;
 }
 
 .container {

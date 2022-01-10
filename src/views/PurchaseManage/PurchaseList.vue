@@ -33,9 +33,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="3">
-                <el-form-item>
-                  <el-checkbox v-model="queryForm.executing" size="mini">只显示执行中的合同</el-checkbox>
-                </el-form-item>
+                <el-checkbox v-model="queryForm.executing" size="mini" class="purbox">只显示执行中的合同</el-checkbox>
               </el-col>
             </el-row>
             <div class="second-row">
@@ -60,12 +58,12 @@
 
                 <el-col :span="3">
                   <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" @click="getPurchaseList" size="small">查询</el-button>
+                    <el-button type="primary" icon="el-icon-search" @click="getPurchaseList" size="mini">查询</el-button>
                   </el-form-item>
                 </el-col>
                 <el-col :span="3">
                   <el-form-item>
-                    <el-button type="primary" icon="el-icon-circle-plus" @click="addPurchase" size="small">新增
+                    <el-button type="primary" icon="el-icon-circle-plus" @click="addPurchase" size="mini">新增
                     </el-button>
                   </el-form-item>
                 </el-col>
@@ -75,7 +73,7 @@
         </div>
         <!--表单区域-->
         <div class="table-box">
-          <el-table :data="tableData" border height="58vh"
+          <el-table :data="tableData" border height="60vh"
                     :header-cell-style="{background:'#F3F4F7',color:'#555'}"
                     :row-style="{height: '40px'}"
                     :cell-style="{padding: '0'}">
@@ -85,19 +83,19 @@
                 <el-link @click="detailPurchase(scope.row.contract_id)">{{ scope.row.name }}</el-link>
               </template>
             </af-table-column>
-            <el-table-column label="供应商" prop="supplier" show-overflow-tooltip fixed></el-table-column>
             <el-table-column label="合同编号" prop="contract_id" show-overflow-tooltip fixed></el-table-column>
+            <el-table-column label="供应商" prop="supplier" show-overflow-tooltip fixed></el-table-column>
             <el-table-column label="签订日期" prop="date" width="100px" show-overflow-tooltip></el-table-column>
             <el-table-column label="签订地点" prop="place" show-overflow-tooltip></el-table-column>
             <el-table-column label="合同金额" prop="money" width="80px" show-overflow-tooltip></el-table-column>
+            <el-table-column label="合同状态" prop="state" width="80px" show-overflow-tooltip></el-table-column>
+            <el-table-column label="备注" prop="remarks" width="150px" show-overflow-tooltip></el-table-column>
             <el-table-column label="合同附件" prop="appendix" width="80px" show-overflow-tooltip align="center">
               <template v-slot="scope">
                 <el-button icon="el-icon-document" size="mini" type="primary"
                            @click="appendixDialog(scope.row)"></el-button>
               </template>
             </el-table-column>
-            <el-table-column label="合同状态" prop="state" width="80px" show-overflow-tooltip></el-table-column>
-            <el-table-column label="备注" prop="remarks" width="150px" show-overflow-tooltip></el-table-column>
             <el-table-column label="操作" width="180px" fixed="right" align="center">
               <template v-slot="scope">
                 <el-tooltip
@@ -167,48 +165,70 @@
     </el-card>
 
     <!--  弹窗区域  -->
-    <el-dialog title="合同附件列表" :visible.sync="appendixDialogVisible" :close-on-click-modal="false">
+    <el-dialog title="合同附件列表" :visible.sync="appendixDialogVisible" :close-on-click-modal="false"
+               customClass="customWidth">
 
     </el-dialog>
-    <el-dialog title="新增采购合同" :visible.sync="addPurchaseDialogVisible" :close-on-click-modal="false">
+    <el-dialog title="新增采购合同" :visible.sync="addPurchaseDialogVisible" :close-on-click-modal="false"
+               customClass="customWidth">
       <div class="scroll">
         <el-scrollbar>
           <el-form label-position="right" label-width="90px" size="mini">
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>合同基础信息</span></div>
-            <el-form-item label="合同名称:">
-              <el-input></el-input>
-            </el-form-item>
-            <el-form-item label="合同编号:">
-              <el-input></el-input>
-            </el-form-item>
-            <el-form-item label="供应商:">
-              <el-select filterable clearable>
-                <el-option
-                    v-for="item in supplierList"
-                    :key="item.value"
-                    :label="item.name"
-                    :value="item.id">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="签订日期:">
-              <el-date-picker
-                  type="date"
-                  placeholder="签订日期"
-                  format="yyyy 年 MM 月 dd 日"
-                  value-format="yyyy-MM-dd">
-              </el-date-picker>
-            </el-form-item>
-            <el-form-item label="签订地点:">
-              <el-input></el-input>
-            </el-form-item>
-            <el-form-item label="备注:">
-              <el-input
-                  type="textarea"
-                  autosize
-                  placeholder="请输入备注内容">
-              </el-input>
-            </el-form-item>
+            <el-row>
+              <el-col :span="23">
+                <el-form-item label="合同名称:">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="合同编号:">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="供应商:">
+                  <el-select filterable clearable>
+                    <el-option
+                        v-for="item in supplierList"
+                        :key="item.value"
+                        :label="item.name"
+                        :value="item.id">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="签订日期:">
+                  <el-date-picker
+                      type="date"
+                      placeholder="签订日期"
+                      format="yyyy 年 MM 月 dd 日"
+                      value-format="yyyy-MM-dd">
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="签订地点:">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="23">
+                <el-form-item label="备注:">
+                  <el-input
+                      type="textarea"
+                      autosize
+                      placeholder="请输入备注内容">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-form-item label="附件:">
               <el-upload
                   class="upload-demo"
@@ -226,7 +246,7 @@
             </el-form-item>
             <el-divider/>
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>物资明细</span>
-              <el-button style="margin-left:30px">添加物资</el-button>
+              <el-button style="margin-left:30px" size="mini">添加物资</el-button>
               <span style="float:right;margin-right: 50px">总金额: {{ totalMoney }}</span>
             </div>
             <div>
@@ -255,45 +275,71 @@
         <el-button type="primary" @click="submitAddPurchase">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="修改采购合同" :visible.sync="editPurchaseDialogVisible" :close-on-click-modal="false">
+    <el-dialog title="修改采购合同" :visible.sync="editPurchaseDialogVisible" :close-on-click-modal="false"
+               customClass="customWidth">
       <div class="scroll">
         <el-scrollbar>
           <el-form label-position="right" label-width="90px" size="mini">
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>合同基础信息</span></div>
-            <el-form-item label="合同名称:">
-              <el-input></el-input>
-            </el-form-item>
-            <el-form-item label="合同编号:">
-              <el-input></el-input>
-            </el-form-item>
-            <el-form-item label="供应商:">
-              <el-select filterable clearable>
-                <el-option
-                    v-for="item in supplierList"
-                    :key="item.value"
-                    :label="item.name"
-                    :value="item.id">
-                </el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="签订日期:">
-              <el-date-picker
-                  type="date"
-                  placeholder="签订日期"
-                  format="yyyy 年 MM 月 dd 日"
-                  value-format="yyyy-MM-dd">
-              </el-date-picker>
-            </el-form-item>
-            <el-form-item label="签订地点:">
-              <el-input></el-input>
-            </el-form-item>
-            <el-form-item label="备注:">
-              <el-input
-                  type="textarea"
-                  autosize
-                  placeholder="请输入备注内容">
-              </el-input>
-            </el-form-item>
+            <el-row>
+              <el-col :span="23">
+                <el-form-item label="合同名称:">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="合同编号:">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="供应商:">
+                  <el-select filterable clearable>
+                    <el-option
+                        v-for="item in supplierList"
+                        :key="item.value"
+                        :label="item.name"
+                        :value="item.id">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="签订日期:">
+                  <el-date-picker
+                      type="date"
+                      placeholder="签订日期"
+                      format="yyyy 年 MM 月 dd 日"
+                      value-format="yyyy-MM-dd">
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="签订地点:">
+                  <el-input></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="23">
+                <el-form-item label="备注:">
+                  <el-input
+                      type="textarea"
+                      autosize
+                      placeholder="请输入备注内容">
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+
             <el-form-item label="附件:">
               <el-upload
                   class="upload-demo"
@@ -311,7 +357,7 @@
             </el-form-item>
             <el-divider/>
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>物资明细</span>
-              <el-button style="margin-left:30px">添加物资</el-button>
+              <el-button style="margin-left:30px" size="mini">添加物资</el-button>
               <span style="float:right;margin-right: 50px">总金额: {{ totalMoney }}</span>
             </div>
             <div>
@@ -340,7 +386,8 @@
         <el-button type="primary" @click="submitEditPurchase">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="查看合同详情" :visible.sync="detailPurchaseDialogVisible" :close-on-click-modal="false">
+    <el-dialog title="查看合同详情" :visible.sync="detailPurchaseDialogVisible" :close-on-click-modal="false"
+               customClass="customWidth">
       <div class="scroll">
         <el-scrollbar>
           <el-form label-position="right" label-width="90px" size="mini">
@@ -373,7 +420,8 @@
                         :header-cell-style="{background:'#F3F4F7',color:'#555'}"
                         :row-style="{height: '40px'}"
                         :cell-style="{padding: '0'}">
-                <el-table-column label="序号" prop="date" width="40px" align="center" show-overflow-tooltip></el-table-column>
+                <el-table-column label="序号" prop="date" width="40px" align="center"
+                                 show-overflow-tooltip></el-table-column>
                 <el-table-column label="物资名称" prop="date" show-overflow-tooltip></el-table-column>
                 <el-table-column label="代号" prop="date" width="100px" show-overflow-tooltip></el-table-column>
                 <el-table-column label="规格型号" prop="date" width="100px" show-overflow-tooltip></el-table-column>
@@ -393,7 +441,8 @@
                         :header-cell-style="{background:'#F3F4F7',color:'#555'}"
                         :row-style="{height: '40px'}"
                         :cell-style="{padding: '0'}">
-                <el-table-column label="序号" prop="date" width="40px" align="center" show-overflow-tooltip></el-table-column>
+                <el-table-column label="序号" prop="date" width="40px" align="center"
+                                 show-overflow-tooltip></el-table-column>
                 <el-table-column label="入库日期" prop="date" show-overflow-tooltip></el-table-column>
                 <el-table-column label="物资名称" prop="date" width="100px" show-overflow-tooltip></el-table-column>
                 <el-table-column label="代号" prop="date" width="100px" show-overflow-tooltip></el-table-column>
@@ -410,7 +459,8 @@
                         :header-cell-style="{background:'#F3F4F7',color:'#555'}"
                         :row-style="{height: '40px'}"
                         :cell-style="{padding: '0'}">
-                <el-table-column label="序号" prop="date" width="40px" align="center" show-overflow-tooltip></el-table-column>
+                <el-table-column label="序号" prop="date" width="40px" align="center"
+                                 show-overflow-tooltip></el-table-column>
                 <el-table-column label="发票代码" prop="date" show-overflow-tooltip></el-table-column>
                 <el-table-column label="发票号码" prop="date" width="100px" show-overflow-tooltip></el-table-column>
                 <el-table-column label="开票日期" prop="date" width="100px" show-overflow-tooltip></el-table-column>
@@ -468,25 +518,25 @@ export default {
         pagenum: 1, // 页数
         pagesize: 15, // 每页大小
       }, // 查询表单
-      addPurchaseForm:{
+      addPurchaseForm: {
         name: null,
         code: null,
         supplier: null,
-        detail:[],
+        detail: [],
       },// 添加合同表单
-      editPurchaseForm:{
+      editPurchaseForm: {
         name: null,
         code: null,
         supplier: null,
-        detail:[],
+        detail: [],
       },//修改合同表单
-      detailPurchaseForm:{
+      detailPurchaseForm: {
         name: null,
         code: null,
         supplier: null,
-        detail:[],
-        deliver:[],
-        invoice:[],
+        detail: [],
+        deliver: [],
+        invoice: [],
       },//合同详情表单
       tableData: [
         {
@@ -519,7 +569,7 @@ export default {
         }, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
       ],
 
-      supplierList:[],// 供应商列表
+      supplierList: [],// 供应商列表
       appendixDialogVisible: false,  // 附件弹窗显示
       addPurchaseDialogVisible: false,  // 新增合同弹窗显示
       editPurchaseDialogVisible: false,  // 编辑合同弹窗显示
@@ -560,7 +610,8 @@ export default {
       this.addPurchaseDialogVisible = true
     },
     // 提交新增合同
-    submitAddPurchase(){},
+    submitAddPurchase() {
+    },
     // 采购合同详细信息
     detailPurchase(contract_id) {
       this.detailPurchaseDialogVisible = true
@@ -570,7 +621,8 @@ export default {
       this.editPurchaseDialogVisible = true
     },
     // 提交修改合同
-    submitEditPurchase(){},
+    submitEditPurchase() {
+    },
     // 删除采购合同
     deletePurchase(contract_id) {
     },
@@ -599,9 +651,14 @@ export default {
 .table-box {
   height: 100%;
 }
+
 .main-container {
   display: flex;
   flex-direction: column;
+}
+
+.search-box .el-form .el-row .el-col {
+  height: 40px;
 }
 
 .card-body {
@@ -609,17 +666,34 @@ export default {
   overflow: auto;
   min-height: 0;
 }
-.scroll{
+
+.scroll {
   height: 60vh;
 }
+
 .el-scrollbar {
   height: 100%;
 }
-.el-scrollbar__wrap{
+
+.el-scrollbar__wrap {
   overflow-x: hidden;
 }
+
 .el-select {
   width: 100%;
 }
 
+.purbox {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+</style>
+<style>
+.customWidth {
+  width: 600px;
+}
+
+.el-date-editor .el-input__inner {
+  width: 166px;
+}
 </style>

@@ -13,7 +13,7 @@
       </el-header>
       <el-container>
         <el-aside :style="{width:switchCollapseWidth}">
-          <el-menu unique-opened router :collapse="isCollapse" class="el-menu-vertical-demo">
+          <el-menu router :collapse="isCollapse" class="el-menu-vertical-demo">
             <el-menu-item @click="switchCollapse">
               <i class="el-icon-s-unfold" v-if="isCollapse" style="text-align: right"></i>
               <i class="el-icon-s-fold" v-else></i>
