@@ -33,7 +33,7 @@
         </div>
         <!-- 原材料列表区 -->
         <div class="table-box">
-          <el-table :data="tableData" border height="67vh"
+          <el-table :data="tableData" border height="66vh"
                     :header-cell-style="{background:'#F3F4F7',color:'#555'}"
                     :row-style="{height: '30px'}"
                     :cell-style="{padding: '0'}"
@@ -130,13 +130,14 @@
           <el-checkbox v-model="addForm.data.is_product" @change="clearPro">此物料可作为成品使用</el-checkbox>
           <el-select v-model="addForm.data.pro" filterable clearable :disabled="!addForm.data.is_product" size="mini">
             <el-option
-                v-for="item in productData"
+                v-for="item in unbindproductData"
                 :key="item.value"
                 :label="item.name"
                 :value="item.id">
+              <span style="float: left">{{ item.name }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.code }}</span>
             </el-option>
           </el-select>
-
         </el-form-item>
         <el-form-item label="备注" prop="remarks">
           <el-input
@@ -218,8 +219,8 @@ export default {
       total: 0,
       // 查询表单
       queryForm: {
-        name: null,
-        code: null,
+        name: "",
+        code: "",
         isProduct: false,
         pagenum: 1,
         pagesize: 20,

@@ -43,7 +43,6 @@
                     <el-date-picker
                         v-model="queryForm.dateRange"
                         type="daterange"
-
                         unlink-panels
                         range-separator="至"
                         start-placeholder="开始日期"
@@ -63,8 +62,7 @@
                 </el-col>
                 <el-col :span="3">
                   <el-form-item>
-                    <el-button type="primary" icon="el-icon-circle-plus" @click="addPurchase" size="mini">新增
-                    </el-button>
+                    <el-button type="primary" icon="el-icon-circle-plus" @click="addPurchase" size="mini">新增</el-button>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -83,7 +81,7 @@
                 <el-link @click="detailPurchase(scope.row.contract_id)">{{ scope.row.name }}</el-link>
               </template>
             </af-table-column>
-            <el-table-column label="合同编号" prop="contract_id" show-overflow-tooltip fixed></el-table-column>
+            <el-table-column label="合同编号" prop="id" show-overflow-tooltip fixed></el-table-column>
             <el-table-column label="供应商" prop="supplier" show-overflow-tooltip fixed></el-table-column>
             <el-table-column label="签订日期" prop="date" width="100px" show-overflow-tooltip></el-table-column>
             <el-table-column label="签订地点" prop="place" show-overflow-tooltip></el-table-column>
@@ -510,9 +508,9 @@ export default {
         }]
       },
       queryForm: {
-        supplier: null, // 供应商
-        code: null, // 合同编号
-        name: null, // 合同名称
+        supplier: "", // 供应商
+        code: "", // 合同编号
+        name: "", // 合同名称
         dateRange: [], // 日期范围
         executing: false, // 只显示执行中的合同
         pagenum: 1, // 页数
@@ -538,36 +536,7 @@ export default {
         deliver: [],
         invoice: [],
       },//合同详情表单
-      tableData: [
-        {
-          contract_id: 1,
-          supplier: "supplier",
-          name: "name",
-          date: "2021-01-28",
-          place: "地点",
-          money: 10000,
-          appendix: {
-            name: "文件名",
-            url: "文件路径"
-          },
-          remarks: "备注",
-          state: "状态",
-        },
-        {
-          contract_id: 2,
-          supplier: "supplier",
-          name: "name",
-          date: "2021-01-28",
-          place: "地点",
-          money: 10000,
-          appendix: {
-            name: "文件名",
-            url: "文件路径"
-          },
-          remarks: "备注",
-          state: "状态",
-        }, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
-      ],
+      tableData: [],
 
       supplierList: [],// 供应商列表
       appendixDialogVisible: false,  // 附件弹窗显示
@@ -579,19 +548,20 @@ export default {
     }
   },
   created() {
-    // this.getPurchaseList()
+    this.getPurchaseList()
   },
   mounted() {
   },
 
   methods: {
     async getPurchaseList() {
-      console.log(this.queryForm)
-      const {data: res} = await this.$http.get('purchase/contract/', {params: this.queryForm})
-      // const {data: res} = await this.$http.get('test/', {params: this.queryForm})
+      let queryForm = {...this.queryForm, action:'list_contract_filter'}
+      const {data: res} = await this.$http.get('purchase/contract/', {params: queryForm})
       res.retlist.forEach((item, index) => {
         item['index'] = index + 1
       })
+      this.tableData = res.retlist
+      this.total = res.total
     },
     async handleSizeChange(pageSize) {
       this.queryForm.pagesize = pageSize
