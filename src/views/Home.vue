@@ -1,6 +1,6 @@
 <template>
   <div>
-    Home
+    正在建设中，敬请期待...
   </div>
 </template>
 
