@@ -168,10 +168,10 @@
 
     </el-dialog>
     <el-dialog title="新增采购合同" :visible.sync="addPurchaseDialogVisible" :close-on-click-modal="false"
-               customClass="customWidth" ref="addForm">
+               customClass="customWidth">
       <div class="scroll">
         <el-scrollbar>
-          <el-form label-position="right" label-width="90px" size="mini">
+          <el-form label-position="right" label-width="90px" size="mini" ref="addForm" :rules="formRules">
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>合同基础信息</span></div>
             <el-row>
               <el-col :span="23">
@@ -279,25 +279,25 @@
                customClass="customWidth">
       <div class="scroll">
         <el-scrollbar>
-          <el-form label-position="right" label-width="90px" size="mini">
+          <el-form label-position="right" label-width="90px" size="mini"  ref="editForm" :rules="formRules">
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>合同基础信息</span></div>
             <el-row>
               <el-col :span="23">
-                <el-form-item label="合同名称:">
-                  <el-input></el-input>
+                <el-form-item label="合同名称:" prop="name">
+                  <el-input v-model="editPurchaseForm.name"/>
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-row>
               <el-col :span="11">
-                <el-form-item label="合同编号:">
-                  <el-input></el-input>
+                <el-form-item label="合同编号:" prop="code">
+                  <el-input v-model="editPurchaseForm.code"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="供应商:">
-                  <el-select filterable clearable>
+                <el-form-item label="供应商:" prop="supplier">
+                  <el-select filterable clearable v-model="editPurchaseForm.supplier">
                     <el-option
                         v-for="item in supplierList"
                         :key="item.value"
@@ -311,8 +311,9 @@
 
             <el-row>
               <el-col :span="11">
-                <el-form-item label="签订日期:">
+                <el-form-item label="签订日期:" prop="date">
                   <el-date-picker
+                      v-model="editPurchaseForm.date"
                       type="date"
                       placeholder="签订日期"
                       format="yyyy 年 MM 月 dd 日"
@@ -321,20 +322,20 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="签订地点:">
-                  <el-input></el-input>
+                <el-form-item label="签订地点:" prop="place">
+                  <el-input v-model="editPurchaseForm.place"/>
                 </el-form-item>
-              </el-col>
+              3
             </el-row>
 
             <el-row>
               <el-col :span="23">
-                <el-form-item label="备注:">
+                <el-form-item label="备注:" prop="remarks">
                   <el-input
+                      v-model="editPurchaseForm.remarks"
                       type="textarea"
                       autosize
-                      placeholder="请输入备注内容">
-                  </el-input>
+                      placeholder="请输入备注内容"/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -530,7 +531,11 @@ export default {
       editPurchaseForm: {
         name: null,
         code: null,
+        date:null,
+        place:null,
         supplier: null,
+        remarks:null,
+        appendix: [],
         detail: [],
       },//修改合同表单
       detailPurchaseForm: {
@@ -541,6 +546,11 @@ export default {
         deliver: [],
         invoice: [],
       },//合同详情表单
+      formRules: {
+        name: [{required: true, message: '请填写名称', trigger: 'blur'}],
+        code: [{required: true, message: '请填写编号', trigger: 'blur'}],
+        supplier: [{required: true, message: '请选择供应商', trigger: 'blur'}],
+      },// 表单规则
       tableData: [],
 
       supplierList: [
