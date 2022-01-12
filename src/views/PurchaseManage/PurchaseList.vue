@@ -71,7 +71,7 @@
         </div>
         <!--表单区域-->
         <div class="table-box">
-          <el-table :data="tableData" border height="60vh"
+          <el-table :data="tableData" border
                     :header-cell-style="{textAlign:'center',background:'#F3F4F7',color:'#555'}"
                     :row-style="{height: '40px'}"
                     :cell-style="{padding: '0'}">
@@ -153,7 +153,7 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               :current-page="queryForm.pagenum"
-              :page-sizes="[15, 30, 50]"
+              :page-sizes="[20, 40, 60, 80, 100]"
               :page-size="queryForm.pagesize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -168,32 +168,32 @@
 
     </el-dialog>
     <el-dialog title="新增采购合同" :visible.sync="addPurchaseDialogVisible" :close-on-click-modal="false"
-               customClass="customWidth">
+               customClass="customWidth" ref="addForm">
       <div class="scroll">
         <el-scrollbar>
           <el-form label-position="right" label-width="90px" size="mini">
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>合同基础信息</span></div>
             <el-row>
               <el-col :span="23">
-                <el-form-item label="合同名称:">
-                  <el-input></el-input>
+                <el-form-item label="合同名称:" prop="name">
+                  <el-input v-model="addPurchaseForm.name"/>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="11">
-                <el-form-item label="合同编号:">
-                  <el-input></el-input>
+                <el-form-item label="合同编号:" prop="code">
+                  <el-input v-model="addPurchaseForm.code"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="供应商:">
-                  <el-select filterable clearable>
+                <el-form-item label="供应商:" prop="supplier">
+                  <el-select filterable clearable v-model="addPurchaseForm.supplier">
                     <el-option
                         v-for="item in supplierList"
-                        :key="item.value"
+                        :key="item.name"
                         :label="item.name"
-                        :value="item.id">
+                        :value="item.name">
                     </el-option>
                   </el-select>
                 </el-form-item>
@@ -203,6 +203,7 @@
               <el-col :span="11">
                 <el-form-item label="签订日期:">
                   <el-date-picker
+                      v-model="addPurchaseForm.date"
                       type="date"
                       placeholder="签订日期"
                       format="yyyy 年 MM 月 dd 日"
@@ -212,7 +213,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="签订地点:">
-                  <el-input></el-input>
+                  <el-input v-model="addPurchaseForm.place"/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -220,6 +221,7 @@
               <el-col :span="23">
                 <el-form-item label="备注:">
                   <el-input
+                      v-model="addPurchaseForm.remarks"
                       type="textarea"
                       autosize
                       placeholder="请输入备注内容">
@@ -269,8 +271,8 @@
         </el-scrollbar>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="addPurchaseDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitAddPurchase">确 定</el-button>
+        <el-button @click="cancelAdd">取 消</el-button>
       </div>
     </el-dialog>
     <el-dialog title="修改采购合同" :visible.sync="editPurchaseDialogVisible" :close-on-click-modal="false"
@@ -391,26 +393,26 @@
           <el-form label-position="right" label-width="90px" size="mini">
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>合同基础信息</span></div>
             <el-form-item label="合同名称:">
-              <span></span>
+              <span>{{ detailPurchaseForm.name }}</span>
             </el-form-item>
             <el-form-item label="合同编号:">
-              <span></span>
+              <span>{{ detailPurchaseForm.code }}</span>
             </el-form-item>
-            <el-form-item label="供应商:">
-              <span></span>
-            </el-form-item>
-            <el-form-item label="签订日期:">
-              <span></span>
-            </el-form-item>
-            <el-form-item label="签订地点:">
-              <span></span>
-            </el-form-item>
-            <el-form-item label="备注:">
-              <span></span>
-            </el-form-item>
-            <el-form-item label="附件:">
-              <span></span>
-            </el-form-item>
+            <!--            <el-form-item label="供应商:">-->
+            <!--              <span></span>-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="签订日期:">-->
+            <!--              <span></span>-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="签订地点:">-->
+            <!--              <span></span>-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="备注:">-->
+            <!--              <span></span>-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="附件:">-->
+            <!--              <span></span>-->
+            <!--            </el-form-item>-->
             <el-divider/>
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>物资明细</span></div>
             <div>
@@ -468,7 +470,6 @@
               </el-table>
             </div>
           </el-form>
-
         </el-scrollbar>
       </div>
     </el-dialog>
@@ -514,12 +515,16 @@ export default {
         dateRange: [], // 日期范围
         executing: false, // 只显示执行中的合同
         pagenum: 1, // 页数
-        pagesize: 15, // 每页大小
+        pagesize: 20, // 每页大小
       }, // 查询表单
       addPurchaseForm: {
         name: null,
         code: null,
+        date:null,
+        place:null,
         supplier: null,
+        remarks:null,
+        appendix: [],
         detail: [],
       },// 添加合同表单
       editPurchaseForm: {
@@ -538,7 +543,10 @@ export default {
       },//合同详情表单
       tableData: [],
 
-      supplierList: [],// 供应商列表
+      supplierList: [
+        {name:"123"},
+        {name:"123456"}
+      ],// 供应商列表
       appendixDialogVisible: false,  // 附件弹窗显示
       addPurchaseDialogVisible: false,  // 新增合同弹窗显示
       editPurchaseDialogVisible: false,  // 编辑合同弹窗显示
@@ -549,13 +557,15 @@ export default {
   },
   created() {
     this.getPurchaseList()
+    this.getSuppliers()
   },
   mounted() {
   },
 
   methods: {
+    // 查询合同列表
     async getPurchaseList() {
-      let queryForm = {...this.queryForm, action:'list_contract_filter'}
+      let queryForm = {...this.queryForm, action: 'list_contract_filter'}
       const {data: res} = await this.$http.get('purchase/contract/', {params: queryForm})
       res.retlist.forEach((item, index) => {
         item['index'] = index + 1
@@ -571,7 +581,7 @@ export default {
       this.queryForm.pagenum = currentPage
       await this.getPurchaseList()
     },
-    // 附件
+    // 查看合同附件
     appendixDialog(row) {
       this.appendixDialogVisible = true
     },
@@ -579,11 +589,23 @@ export default {
     addPurchase() {
       this.addPurchaseDialogVisible = true
     },
+    // 取消新增合同
+    cancelAdd() {
+      this.addPurchaseDialogVisible = false
+      this.$refs.addForm.resetFields()
+    },
     // 提交新增合同
     submitAddPurchase() {
     },
     // 采购合同详细信息
-    detailPurchase(contract_id) {
+    async detailPurchase(contract_id) {
+      const {data: res} = await this.$http.get('purchase/contract/', {
+        params: {
+          action: 'list_contract_detail',
+          id: contract_id
+        }
+      })
+      console.log(res)
       this.detailPurchaseDialogVisible = true
     },
     // 编辑采购合同
@@ -599,7 +621,15 @@ export default {
     // 终止采购合同
     stopPurchase(contract_id) {
     },
-
+    // 查询供应商
+    async getSuppliers() {
+      const {data: res} = await this.$http.get('company/supplier/')
+      if (res.ret === 0) {
+        this.supplierList = res.retlist
+      } else {
+        this.$message.error("查询不到供应商")
+      }
+    },
   },
   computed: {},
 
@@ -632,7 +662,7 @@ export default {
 }
 
 .card-body {
-  flex: 0;
+  flex: 1;
   overflow: auto;
   min-height: 0;
 }
