@@ -33,9 +33,9 @@
         </div>
         <!-- 原材料列表区 -->
         <div class="table-box">
-          <el-table :data="tableData" border height="66vh"
-                    :header-cell-style="{background:'#F3F4F7',color:'#555'}"
-                    :row-style="{height: '30px'}"
+          <el-table :data="tableData" border height="60vh"
+                    :header-cell-style="{textAlign:'center',background:'#F3F4F7',color:'#555'}"
+                    :row-style="{height: '40px'}"
                     :cell-style="{padding: '0'}"
           >
             <el-table-column label="序号" prop="index" width="50px" fixed align="center"></el-table-column>
@@ -52,7 +52,7 @@
               </template>
             </el-table-column>
             <el-table-column label="执行标准" prop="exe_standard" show-overflow-tooltip></el-table-column>
-            <el-table-column label="单位" prop="unitID" width="80px" show-overflow-tooltip>
+            <el-table-column label="单位" prop="unitID" width="60px" show-overflow-tooltip align="center">
               <template v-slot="scope">
                 <span>{{ unitName(scope.row.unitID) }}</span>
               </template>
@@ -277,21 +277,20 @@ export default {
   },
   methods: {
     // 提交添加原材料
-    async submitAddMaterial() {
-      await this.$refs.addForm.validate(async (valid) => {
+    submitAddMaterial() {
+      this.$refs.addForm.validate(async (valid) => {
         if (!valid) return
+        const {data: res} = await this.$http.post('material/mater_mg/', this.addForm)
+        if (res.ret === 0) {
+          this.$message.success("添加成功")
+          this.$refs.addForm.resetFields()
+          this.addFormVisible = false
+          await this.getMaterialList()
+          await this.getUnbindProData()
+        }else if (res.ret === 1){
+          this.$message.error(res.msg)
+        }
       })
-      const {data: res} = await this.$http.post('material/mater_mg/', this.addForm)
-      console.log(res)
-      if (res.ret === 0) {
-        this.$message.success("添加成功")
-        this.$refs.addForm.resetFields()
-        this.addFormVisible = false
-        await this.getMaterialList()
-        await this.getUnbindProData()
-      }else if (res.ret === 1){
-        this.$message.error(res.msg)
-      }
     },
     // 取消添加原材料
     cancelAdd() {

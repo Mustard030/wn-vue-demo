@@ -72,7 +72,7 @@
         <!--表单区域-->
         <div class="table-box">
           <el-table :data="tableData" border height="60vh"
-                    :header-cell-style="{background:'#F3F4F7',color:'#555'}"
+                    :header-cell-style="{textAlign:'center',background:'#F3F4F7',color:'#555'}"
                     :row-style="{height: '40px'}"
                     :cell-style="{padding: '0'}">
             <el-table-column label="序号" prop="index" width="50px" fixed align="center"></el-table-column>
