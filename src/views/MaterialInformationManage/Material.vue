@@ -148,8 +148,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="addFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitAddMaterial">确 定</el-button>
+        <el-button @click="cancelAdd">取 消</el-button>
       </div>
     </el-dialog>
     <el-dialog title="修改原材料" :visible.sync="editFormVisible" :close-on-click-modal="false" customClass="customWidth">
@@ -197,8 +197,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="editFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitEdit">确 定</el-button>
+        <el-button @click="editFormVisible = false">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -287,6 +287,11 @@ export default {
         await this.getUnbindProData()
       }
     },
+    // 取消添加原材料
+    cancelAdd() {
+      this.addFormVisible = false
+      this.$refs.addForm.resetFields()
+    },
     // 打开修改表单
     openEditForm(row) {
       this.editForm.id = row.id
@@ -332,8 +337,8 @@ export default {
         }
         const {data: res} = await this.$http.put('material/mater_mg/', form)
         if (res.ret === 0) {
-          row.edit = !row.edit
           this.$message.success("修改成功")
+          this.editFormVisible = false
         } else if (res.ret === 1) {
           await this.$confirm(res.msg, '提示', {
             confirmButtonText: '确定',
