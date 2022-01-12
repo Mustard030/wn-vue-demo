@@ -278,13 +278,19 @@ export default {
   methods: {
     // 提交添加原材料
     async submitAddMaterial() {
+      await this.$refs.addForm.validate(async (valid) => {
+        if (!valid) return
+      })
       const {data: res} = await this.$http.post('material/mater_mg/', this.addForm)
+      console.log(res)
       if (res.ret === 0) {
         this.$message.success("添加成功")
         this.$refs.addForm.resetFields()
         this.addFormVisible = false
         await this.getMaterialList()
         await this.getUnbindProData()
+      }else if (res.ret === 1){
+        this.$message.error(res.msg)
       }
     },
     // 取消添加原材料
