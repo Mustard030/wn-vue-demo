@@ -332,6 +332,7 @@ export default {
           action: "edit_material",
           id: this.editForm.id,
           newdata: {
+            name: this.editForm.name,
             code: this.editForm.code,
             standards: this.editForm.standards,
             exe_standard: this.editForm.exe_standard,
