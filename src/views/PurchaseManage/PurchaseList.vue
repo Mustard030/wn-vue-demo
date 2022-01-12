@@ -325,7 +325,7 @@
                 <el-form-item label="签订地点:" prop="place">
                   <el-input v-model="editPurchaseForm.place"/>
                 </el-form-item>
-              3
+              </el-col>
             </el-row>
 
             <el-row>
