@@ -64,7 +64,7 @@ body,
 }
 /*table hover行变色*/
 .el-table__body tr.hover-row>td.el-table__cell{
-    background-color: #d1d2d3 !important;
+    /*background-color: #d1d2d3 !important;*/
 }
 .el-pagination {
     margin-top: 15px;
