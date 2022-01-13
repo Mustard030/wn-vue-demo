@@ -24,7 +24,7 @@
                 <el-checkbox v-model="queryForm.isProduct" size="mini">仅显示可作为成品使用的原材料</el-checkbox>
               </el-col>
               <el-col :span="6">
-                <el-button type="primary" icon="el-icon-search" @click="getMaterialList" size="mini">查询</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="query" size="mini">查询</el-button>
                 <el-button type="primary" icon="el-icon-circle-plus" @click="addFormVisible=true" size="mini">新增
                 </el-button>
               </el-col>
@@ -103,29 +103,47 @@
 
     <!--  弹窗区  -->
     <el-dialog title="新增原材料" :visible.sync="addFormVisible" :close-on-click-modal="false" customClass="customWidth">
-      <el-form :model="addForm.data" label-width="80px" label-position="right" ref="addForm" :rules="formRules" size="mini">
-        <el-form-item label="名称" prop="name">
-          <el-input v-model.trim="addForm.data.name" size="mini"/>
-        </el-form-item>
-        <el-form-item label="代号" prop="code">
-          <el-input v-model="addForm.data.code" size="mini"/>
-        </el-form-item>
-        <el-form-item label="规格型号" prop="standards">
-          <el-input v-model="addForm.data.standards" size="mini"/>
-        </el-form-item>
-        <el-form-item label="执行标准" prop="exe_standard">
-          <el-input v-model="addForm.data.exe_standard" size="mini"/>
-        </el-form-item>
-        <el-form-item label="单位" prop="unit">
-          <el-select v-model="addForm.data.unit" filterable clearable size="mini">
-            <el-option
-                v-for="item in unitData"
-                :key="item.value"
-                :label="item.name"
-                :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
+      <el-form :model="addForm.data" label-width="80px" label-position="right" ref="addForm" :rules="formRules"
+               size="mini">
+        <el-row>
+          <el-col :span="23">
+            <el-form-item label="名称" prop="name">
+              <el-input v-model.trim="addForm.data.name" size="mini"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="代号" prop="code">
+              <el-input v-model="addForm.data.code" size="mini"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="规格型号" prop="standards">
+              <el-input v-model="addForm.data.standards" size="mini"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="执行标准" prop="exe_standard">
+              <el-input v-model="addForm.data.exe_standard" size="mini"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="单位" prop="unit">
+              <el-select v-model="addForm.data.unit" filterable clearable size="mini">
+                <el-option
+                    v-for="item in unitData"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <el-form-item label="产品名称" prop="pro">
           <el-checkbox v-model="addForm.data.is_product" @change="clearPro">此物料可作为成品使用</el-checkbox>
           <el-select v-model="addForm.data.pro" filterable clearable :disabled="!addForm.data.is_product" size="mini">
@@ -139,13 +157,17 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="备注" prop="remarks">
-          <el-input
-              type="textarea"
-              :rows="2"
-              v-model="addForm.data.remarks"
-              size="mini"/>
-        </el-form-item>
+        <el-row>
+          <el-col :span="23">
+            <el-form-item label="备注" prop="remarks">
+              <el-input
+                  type="textarea"
+                  :rows="2"
+                  v-model="addForm.data.remarks"
+                  size="mini"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitAddMaterial">确 定</el-button>
@@ -153,30 +175,46 @@
       </div>
     </el-dialog>
     <el-dialog title="修改原材料" :visible.sync="editFormVisible" :close-on-click-modal="false" customClass="customWidth">
-      <el-form :model="editForm" label-width="80px" label-position="right" ref="editForm" :rules="formRules" size="mini">
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="editForm.name"></el-input>
-          <!--          <span>{{ editForm.name }}</span>-->
-        </el-form-item>
-        <el-form-item label="代号" prop="code">
-          <el-input v-model="editForm.code"></el-input>
-        </el-form-item>
-        <el-form-item label="规格型号" prop="standards">
-          <el-input v-model="editForm.standards"></el-input>
-        </el-form-item>
-        <el-form-item label="执行标准" prop="exe_standard">
-          <el-input v-model="editForm.exe_standard"></el-input>
-        </el-form-item>
-        <el-form-item label="单位" prop="unit">
-          <el-select v-model="editForm.unit" filterable clearable>
-            <el-option
-                v-for="item in unitData"
-                :key="item.value"
-                :label="item.name"
-                :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
+      <el-form :model="editForm" label-width="80px" label-position="right" ref="editForm" :rules="formRules"
+               size="mini">
+        <el-row>
+          <el-col :span="23">
+            <el-form-item label="名称" prop="name">
+              <el-input v-model="editForm.name"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="代号" prop="code">
+              <el-input v-model="editForm.code"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="规格型号" prop="standards">
+              <el-input v-model="editForm.standards"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="执行标准" prop="exe_standard">
+              <el-input v-model="editForm.exe_standard"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="单位" prop="unit">
+              <el-select v-model="editForm.unit" filterable clearable>
+                <el-option
+                    v-for="item in unitData"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="产品名称" prop="pro">
           <el-checkbox v-model="editForm.is_product" @change="clearPro">此物料可作为成品使用</el-checkbox>
           <el-select v-model="editForm.pro" filterable clearable :disabled="!editForm.is_product">
@@ -187,14 +225,17 @@
                 :value="item.id">
             </el-option>
           </el-select>
-
         </el-form-item>
-        <el-form-item label="备注" prop="remarks">
-          <el-input
-              type="textarea"
-              :rows="2"
-              v-model="editForm.remarks"></el-input>
-        </el-form-item>
+        <el-row>
+          <el-col :span="23">
+            <el-form-item label="备注" prop="remarks">
+              <el-input
+                  type="textarea"
+                  :rows="2"
+                  v-model="editForm.remarks"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitEdit">确 定</el-button>
@@ -287,7 +328,7 @@ export default {
           this.addFormVisible = false
           await this.getMaterialList()
           await this.getUnbindProData()
-        }else if (res.ret === 1){
+        } else if (res.ret === 1) {
           this.$message.error(res.msg)
         }
       })
@@ -388,7 +429,11 @@ export default {
       }
 
     },
-    // 获取原材料列表（提交查询）
+    async query(){
+      this.queryForm.pagenum = 1
+      await this.getMaterialList()
+    },
+    // 获取原材料列表
     async getMaterialList() {
       let queryForm = {...this.queryForm, action: "list_material_filter"}
       let {data: res} = await this.$http.get('material/mater_mg/', {params: queryForm})
@@ -485,7 +530,7 @@ export default {
 }
 
 .el-form-item__content > .el-checkbox {
-  margin-right: 20px;
+  margin-right: 92px;
 }
 
 .el-form-item {

@@ -11,12 +11,12 @@
             <el-row :gutter="20">
               <el-col :span="6">
                 <el-form-item label="合同名称：">
-                  <el-input v-model="queryForm.name" size="mini"/>
+                  <el-input v-model="queryForm.name" size="mini" clearable/>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="合同编号：">
-                  <el-input v-model="queryForm.code" size="mini"/>
+                  <el-input v-model="queryForm.code" size="mini" clearable/>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
@@ -42,6 +42,7 @@
                   <el-form-item label="签订日期从:">
                     <el-date-picker
                         v-model="queryForm.dateRange"
+                        clearable
                         type="daterange"
                         unlink-panels
                         range-separator="至"
@@ -57,7 +58,7 @@
 
                 <el-col :span="3">
                   <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" @click="getPurchaseList" size="mini">查询</el-button>
+                    <el-button type="primary" icon="el-icon-search" @click="query" size="mini">查询</el-button>
                   </el-form-item>
                 </el-col>
                 <el-col :span="3">
@@ -144,7 +145,6 @@
 
               </template>
             </el-table-column>
-
           </el-table>
         </div>
         <!--分页区域-->
@@ -163,30 +163,28 @@
     </el-card>
 
     <!--  弹窗区域  -->
-    <el-dialog title="合同附件列表" :visible.sync="appendixDialogVisible" :close-on-click-modal="false"
-               customClass="customWidth">
-
+    <el-dialog title="合同附件列表" :visible.sync="appendixDialogVisible" :close-on-click-modal="false">
     </el-dialog>
     <el-dialog title="新增采购合同" :visible.sync="addPurchaseDialogVisible" :close-on-click-modal="false"
-               customClass="customWidth">
+               customClass="customWidthwide">
       <div class="scroll">
-        <el-scrollbar>
-          <el-form label-position="right" label-width="90px" size="mini" ref="addForm" :rules="formRules">
+        <el-scrollbar class="scrollbar">
+          <el-form ref="addPurchaseFormRefs" :rules="formRules" label-position="right" label-width="90px" size="mini">
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>合同基础信息</span></div>
-            <el-row>
-              <el-col :span="23">
+            <el-row :gutter="20">
+              <el-col :span="15">
                 <el-form-item label="合同名称:" prop="name">
                   <el-input v-model="addPurchaseForm.name"/>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="11">
+              <el-col :span="8">
                 <el-form-item label="合同编号:" prop="code">
                   <el-input v-model="addPurchaseForm.code"/>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="8">
                 <el-form-item label="供应商:" prop="supplier">
                   <el-select filterable clearable v-model="addPurchaseForm.supplier">
                     <el-option
@@ -198,9 +196,7 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="11">
+              <el-col :span="7">
                 <el-form-item label="签订日期:">
                   <el-date-picker
                       v-model="addPurchaseForm.date"
@@ -211,7 +207,7 @@
                   </el-date-picker>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="8">
                 <el-form-item label="签订地点:">
                   <el-input v-model="addPurchaseForm.place"/>
                 </el-form-item>
@@ -237,7 +233,6 @@
                   :on-remove="handleRemove"
                   :before-remove="beforeRemove"
                   multiple
-                  :limit="3"
                   :on-exceed="handleExceed"
                   :file-list="fileList">
                 <el-button size="small" type="primary">点击上传</el-button>
@@ -246,7 +241,7 @@
             </el-form-item>
             <el-divider/>
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>物资明细</span>
-              <el-button style="margin-left:30px" size="mini">添加物资</el-button>
+              <el-button style="margin-left:30px" size="mini" @click="addMaterial">添加物资</el-button>
               <span style="float:right;margin-right: 50px">总金额: {{ totalMoney }}</span>
             </div>
             <div>
@@ -272,30 +267,30 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitAddPurchase">确 定</el-button>
-        <el-button @click="cancelAdd">取 消</el-button>
+        <el-button @click="cancelAddPurchase">取 消</el-button>
       </div>
     </el-dialog>
     <el-dialog title="修改采购合同" :visible.sync="editPurchaseDialogVisible" :close-on-click-modal="false"
-               customClass="customWidth">
+               customClass="customWidthwide">
       <div class="scroll">
         <el-scrollbar>
           <el-form label-position="right" label-width="90px" size="mini"  ref="editForm" :rules="formRules">
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>合同基础信息</span></div>
-            <el-row>
-              <el-col :span="23">
+            <el-row :gutter="20">
+              <el-col :span="15">
                 <el-form-item label="合同名称:" prop="name">
                   <el-input v-model="editPurchaseForm.name"/>
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row>
-              <el-col :span="11">
+              <el-col :span="8">
                 <el-form-item label="合同编号:" prop="code">
                   <el-input v-model="editPurchaseForm.code"/>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+            </el-row>
+
+            <el-row :gutter="20">
+              <el-col :span="8">
                 <el-form-item label="供应商:" prop="supplier">
                   <el-select filterable clearable v-model="editPurchaseForm.supplier">
                     <el-option
@@ -307,10 +302,7 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row>
-              <el-col :span="11">
+              <el-col :span="7">
                 <el-form-item label="签订日期:" prop="date">
                   <el-date-picker
                       v-model="editPurchaseForm.date"
@@ -321,7 +313,7 @@
                   </el-date-picker>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="8">
                 <el-form-item label="签订地点:" prop="place">
                   <el-input v-model="editPurchaseForm.place"/>
                 </el-form-item>
@@ -339,8 +331,6 @@
                 </el-form-item>
               </el-col>
             </el-row>
-
-
             <el-form-item label="附件:">
               <el-upload
                   class="upload-demo"
@@ -387,8 +377,7 @@
         <el-button type="primary" @click="submitEditPurchase">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="查看合同详情" :visible.sync="detailPurchaseDialogVisible" :close-on-click-modal="false"
-               customClass="customWidth">
+    <el-dialog title="查看合同详情" :visible.sync="detailPurchaseDialogVisible" :close-on-click-modal="false" customClass="customWidthwide">
       <div class="scroll">
         <el-scrollbar>
           <el-form label-position="right" label-width="90px" size="mini">
@@ -465,13 +454,63 @@
                 <el-table-column label="发票代码" prop="date" show-overflow-tooltip></el-table-column>
                 <el-table-column label="发票号码" prop="date" width="100px" show-overflow-tooltip></el-table-column>
                 <el-table-column label="开票日期" prop="date" width="100px" show-overflow-tooltip></el-table-column>
-                <el-table-column label="金额（含税）" prop="date" width="100px" show-overflow-tooltip></el-table-column>
+                <el-table-column label="金额" prop="date" width="100px" show-overflow-tooltip></el-table-column>
                 <el-table-column label="备注" prop="date" width="100px" show-overflow-tooltip></el-table-column>
                 <el-table-column label="发票图片" prop="date" width="100px" show-overflow-tooltip></el-table-column>
               </el-table>
             </div>
           </el-form>
         </el-scrollbar>
+      </div>
+    </el-dialog>
+
+
+    <el-dialog title="添加物资" :visible.sync="addMaterialDialogVisible" :close-on-click-modal="false">
+      <el-form label-position="right" label-width="90px" size="mini"  ref="addMaterialForm" :rules="materialFormRules">
+        <el-row>
+          <el-col>
+            <el-form-item label="物资名称" prop="name">
+              <el-input v-model="addMaterialForm.name"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitAddMaterial">确 定</el-button>
+        <el-button @click="cancelAddMaterial">取 消</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="修改物资" :visible.sync="editMaterialDialogVisible" :close-on-click-modal="false">
+      <el-form label-position="right" label-width="90px" size="mini"  ref="editMaterialForm" :rules="materialFormRules">
+        <el-row>
+          <el-col>
+
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitEditMaterial">确 定</el-button>
+        <el-button @click="editMaterialDialogVisible = false">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -546,11 +585,14 @@ export default {
         deliver: [],
         invoice: [],
       },//合同详情表单
+      addMaterialForm: {},
+      editMaterialForm: {},
       formRules: {
         name: [{required: true, message: '请填写名称', trigger: 'blur'}],
         code: [{required: true, message: '请填写编号', trigger: 'blur'}],
         supplier: [{required: true, message: '请选择供应商', trigger: 'blur'}],
       },// 表单规则
+      materialFormRules: {}, // 物资表单规则
       tableData: [],
 
       supplierList: [
@@ -561,6 +603,8 @@ export default {
       addPurchaseDialogVisible: false,  // 新增合同弹窗显示
       editPurchaseDialogVisible: false,  // 编辑合同弹窗显示
       detailPurchaseDialogVisible: false,  // 合同详情弹窗显示
+      addMaterialDialogVisible: false,  // 添加物资
+      editMaterialDialogVisible: false,  // 修改物资
       total: 0,  // 表格数据条数
       totalMoney: 100,// 总金额
     }
@@ -569,10 +613,14 @@ export default {
     this.getPurchaseList()
     this.getSuppliers()
   },
-  mounted() {
-  },
+  mounted() {},
 
   methods: {
+    // 点击查询按钮
+    async query(){
+      this.queryForm.pagenum = 1
+      await this.getPurchaseList()
+    },
     // 查询合同列表
     async getPurchaseList() {
       let queryForm = {...this.queryForm, action: 'list_contract_filter'}
@@ -600,9 +648,9 @@ export default {
       this.addPurchaseDialogVisible = true
     },
     // 取消新增合同
-    cancelAdd() {
+    cancelAddPurchase() {
       this.addPurchaseDialogVisible = false
-      this.$refs.addForm.resetFields()
+      this.$refs.addPurchaseFormRefs.resetFields()
     },
     // 提交新增合同
     submitAddPurchase() {
@@ -640,6 +688,23 @@ export default {
         this.$message.error("查询不到供应商")
       }
     },
+    // 添加物资
+    addMaterial(){
+      this.addMaterialDialogVisible = true
+    },
+    // 提交添加物资
+    submitAddMaterial(){},
+    // 取消添加物资
+    cancelAddMaterial(){
+      this.addMaterialDialogVisible = false
+      this.$refs.addMaterialForm.resetFields()
+    },
+    // 修改物资
+    editMaterial(){},
+    // 提交修改物资
+    submitEditMaterial(){},
+    // 删除物资
+    deleteMaterial(){},
   },
   computed: {},
 
@@ -678,15 +743,11 @@ export default {
 }
 
 .scroll {
-  height: 60vh;
+  height: 50vh;
 }
 
 .el-scrollbar {
   height: 100%;
-}
-
-.el-scrollbar__wrap {
-  overflow-x: hidden;
 }
 
 .el-select {
@@ -699,11 +760,14 @@ export default {
 }
 </style>
 <style>
-.customWidth {
-  width: 600px;
+.customWidthwide {
+  width: 1200px;
 }
-
+/*签订日期宽度*/
 .el-date-editor .el-input__inner {
-  width: 166px;
+  width: 230px;
+}
+.el-scrollbar__wrap {
+  overflow-x: hidden !important;
 }
 </style>

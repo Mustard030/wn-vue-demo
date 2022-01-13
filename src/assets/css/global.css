@@ -96,3 +96,8 @@ body,
 .ccbtn:hover > span {
     color: #fff;
 }
+
+.el-divider--horizontal {
+    margin-top: 12px !important;
+    margin-bottom: 12px !important;
+}
