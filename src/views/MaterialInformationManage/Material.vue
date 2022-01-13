@@ -33,7 +33,7 @@
         </div>
         <!-- 原材料列表区 -->
         <div class="table-box">
-          <el-table :data="tableData" border
+          <el-table :data="tableData" border height="60vh"
                     :header-cell-style="{textAlign:'center',background:'#F3F4F7',color:'#555'}"
                     :row-style="{height: '40px'}"
                     :cell-style="{padding: '0'}"
