@@ -105,7 +105,7 @@
     <el-dialog title="新增原材料" :visible.sync="addFormVisible" :close-on-click-modal="false" customClass="customWidth">
       <el-form :model="addForm.data" label-width="80px" label-position="right" ref="addForm" :rules="formRules" size="mini">
         <el-form-item label="名称" prop="name">
-          <el-input v-model="addForm.data.name" size="mini"/>
+          <el-input v-model.trim="addForm.data.name" size="mini"/>
         </el-form-item>
         <el-form-item label="代号" prop="code">
           <el-input v-model="addForm.data.code" size="mini"/>
