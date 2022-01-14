@@ -787,7 +787,7 @@ export default {
     // 取消添加物资
     cancelAddMaterial() {
       this.addMaterialDialogVisible = false
-      this.$refs.addMaterialForm.resetFields()
+      this.$refs.addMaterialFormRefs.resetFields()
     },
     // 修改物资
     editMaterial() {
