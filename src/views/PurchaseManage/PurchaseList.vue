@@ -308,9 +308,9 @@
                   <el-select filterable clearable v-model="editPurchaseForm.supplier">
                     <el-option
                         v-for="item in supplierList"
-                        :key="item.value"
+                        :key="item.name"
                         :label="item.name"
-                        :value="item.id">
+                        :value="item.name">
                     </el-option>
                   </el-select>
                 </el-form-item>
@@ -362,7 +362,7 @@
             <el-divider/>
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>物资明细</span>
               <el-button style="margin-left:30px" size="mini">添加物资</el-button>
-              <span style="float:right;margin-right: 50px">总金额: {{ totalMoney }}</span>
+              <span style="float:right;margin-right: 50px">总金额: </span><el-input v-model="editPurchaseForm.totalMoney" :value="purchaseTotalPrice"></el-input>
             </div>
             <div>
               <el-table :data="editPurchaseForm.detail" border
@@ -562,20 +562,78 @@
       </div>
     </el-dialog>
     <el-dialog title="修改物资" :visible.sync="editMaterialDialogVisible" :close-on-click-modal="false">
-      <el-form label-position="right" label-width="90px" size="mini" ref="editMaterialForm" :rules="materialFormRules">
+      <el-form :model="editMaterialForm" ref="editMaterialForm" :rules="materialFormRules" label-position="right" label-width="90px" size="mini">
         <el-row>
-          <el-col>
-
+          <el-col :span="15">
+            <el-form-item label="物资名称" prop="name">
+              <el-input v-model="editMaterialForm.name" @change="searchCode"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="代号" prop="code">
+              <el-select v-model="editMaterialForm.code" @change="fillOtherInfo" filterable clearable>
+                <el-option
+                    v-for="item in codeList"
+                    :key="item.code"
+                    :label="item.code"
+                    :value="item.code">
+                </el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col>
-
+          <el-col :span="8">
+            <el-form-item label="规格型号" prop="standards">
+              <el-input v-model="editMaterialForm.standards"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="执行标准" prop="exe_standard">
+              <el-input v-model="editMaterialForm.exe_standard"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="单位" prop="unit">
+              <el-select v-model="editMaterialForm.unit" filterable clearable size="mini">
+                <el-option
+                    v-for="item in unitList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col>
-
+          <el-col :span="7">
+            <el-form-item label="数量" prop="num">
+              <el-input v-model.number="editMaterialForm.num"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="单价" prop="price">
+              <el-input v-model.number="editMaterialForm.price"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="金额" prop="totalPrice">
+              <el-input v-model.number="editMaterialForm.totalPrice" :value="oneMaterialTotalPrice" readonly/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="23">
+            <el-form-item label="备注:">
+              <el-input
+                  v-model="editMaterialForm.remarks"
+                  type="textarea"
+                  autosize
+                  clearable
+                  placeholder="请输入备注内容">
+              </el-input>
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -592,33 +650,7 @@ export default {
   name: "PurchaseList",
   data() {
     return {
-      pickerOptions: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: '最近一个月',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: '最近三个月',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-            picker.$emit('pick', [start, end]);
-          }
-        }]
-      },
+      // 表单
       queryForm: {
         supplier: "", // 供应商
         code: "", // 合同编号
@@ -667,30 +699,68 @@ export default {
         price: null,
         totalPrice: null,
         remarks:null,
-      },
-      editMaterialForm: {},
+      }, // 添加物资表单
+      editMaterialForm: {
+        name: null,
+        code: null,
+        standards: null,
+        exe_standard: null,
+        unit: null,
+        num: null,
+        price: null,
+        totalPrice: null,
+        remarks:null,
+      }, // 修改物资表单
+      // 信息
       codeList: [],// 添加物资时根据名称返回的代号及其他信息列表
-      unitList: [],
+      unitList: [],// 单位表
+      supplierList: [
+        {name: "123"},
+        {name: "123456"}
+      ],// 供应商列表
+      tableData: [],// 主体数据
+      total: 0,  // 表格数据条数
+      // 表单规则
       formRules: {
         name: [{required: true, message: '请填写名称', trigger: 'blur'}],
         code: [{required: true, message: '请填写编号', trigger: 'blur'}],
         supplier: [{required: true, message: '请选择供应商', trigger: 'blur'}],
       },// 表单规则
       materialFormRules: {}, // 物资表单规则
-      tableData: [],
-
-      supplierList: [
-        {name: "123"},
-        {name: "123456"}
-      ],// 供应商列表
+      // 杂项
       appendixDialogVisible: false,  // 附件弹窗显示
       addPurchaseDialogVisible: false,  // 新增合同弹窗显示
       editPurchaseDialogVisible: false,  // 编辑合同弹窗显示
       detailPurchaseDialogVisible: false,  // 合同详情弹窗显示
       addMaterialDialogVisible: false,  // 添加物资
       editMaterialDialogVisible: false,  // 修改物资
-      total: 0,  // 表格数据条数
-
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      },
     }
   },
   created() {
@@ -717,10 +787,12 @@ export default {
       this.tableData = res.retlist
       this.total = res.total
     },
+    // 更改页大小
     async handleSizeChange(pageSize) {
       this.queryForm.pagesize = pageSize
       await this.getPurchaseList()
     },
+    // 更改页数
     async handleCurrentChange(currentPage) {
       this.queryForm.pagenum = currentPage
       await this.getPurchaseList()
@@ -782,6 +854,7 @@ export default {
     submitAddMaterial() {
       this.addMaterialDialogVisible = false
       this.addPurchaseForm.detail.push({...this.addMaterialForm})
+      this.addPurchaseForm.totalMoney = this.purchaseTotalPrice(this.addPurchaseForm)
       this.$refs.addMaterialFormRefs.resetFields()
     },
     // 取消添加物资
@@ -791,9 +864,11 @@ export default {
     },
     // 修改物资
     editMaterial() {
+
     },
     // 提交修改物资
     submitEditMaterial() {
+      this.editPurchaseForm.totalMoney = this.purchaseTotalPrice(this.editPurchaseForm)
     },
     // 删除物资
     deleteMaterial() {
@@ -813,16 +888,28 @@ export default {
     // 根据选择代号填入其他信息
     fillOtherInfo() {
     },
-
-
+    // 获取序号
     indexMethod(index) {
       return index + 1;
-    }
+    },
+    // 合同物资总金额
+    purchaseTotalPrice(form){
+      let arrnum = []
+      for(let item of form.detail){
+        arrnum.push(item.totalPrice)
+      }
+      return arrnum.reduce((prev, cur, index, arr) => {
+        return prev + cur
+      }, 0)
+    },
   },
   computed: {
+    // 单个物资总金额
     oneMaterialTotalPrice() {
       this.addMaterialForm.totalPrice = this.addMaterialForm.num * this.addMaterialForm.price
     },
+
+    // 单位id名称转换
     unitName() {
       return function (unitID) {
         for (let item of this.unitList) {
