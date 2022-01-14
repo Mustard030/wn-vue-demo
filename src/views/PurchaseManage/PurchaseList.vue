@@ -169,17 +169,18 @@
                customClass="customWidthwide">
       <div class="scroll">
         <el-scrollbar class="scrollbar">
-          <el-form ref="addPurchaseFormRefs" :rules="formRules" label-position="right" label-width="90px" size="mini">
+          <el-form :model="addPurchaseForm" ref="addPurchaseFormRefs" :rules="formRules" label-position="right"
+                   label-width="90px" size="mini">
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>合同基础信息</span></div>
             <el-row :gutter="20">
               <el-col :span="15">
                 <el-form-item label="合同名称:" prop="name">
-                  <el-input v-model="addPurchaseForm.name"/>
+                  <el-input v-model="addPurchaseForm.name" clearable/>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="合同编号:" prop="code">
-                  <el-input v-model="addPurchaseForm.code"/>
+                  <el-input v-model="addPurchaseForm.code" clearable/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -200,6 +201,7 @@
                 <el-form-item label="签订日期:">
                   <el-date-picker
                       v-model="addPurchaseForm.date"
+                      clearable
                       type="date"
                       placeholder="签订日期"
                       format="yyyy 年 MM 月 dd 日"
@@ -209,7 +211,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="签订地点:">
-                  <el-input v-model="addPurchaseForm.place"/>
+                  <el-input v-model="addPurchaseForm.place" clearable/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -220,6 +222,7 @@
                       v-model="addPurchaseForm.remarks"
                       type="textarea"
                       autosize
+                      clearable
                       placeholder="请输入备注内容">
                   </el-input>
                 </el-form-item>
@@ -242,24 +245,34 @@
             <el-divider/>
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>物资明细</span>
               <el-button style="margin-left:30px" size="mini" @click="addMaterial">添加物资</el-button>
-              <span style="float:right;margin-right: 50px">总金额: {{ totalMoney }}</span>
+              <span style="float:right;margin-right: 50px">总金额: {{ addPurchaseForm.totalMoney }}</span>
             </div>
             <div>
               <el-table :data="addPurchaseForm.detail" border
                         :header-cell-style="{background:'#F3F4F7',color:'#555'}"
                         :row-style="{height: '40px'}"
                         :cell-style="{padding: '0'}">
-                <el-table-column label="序号" prop="date" width="80px" show-overflow-tooltip></el-table-column>
-                <el-table-column label="物资名称" prop="date" show-overflow-tooltip></el-table-column>
-                <el-table-column label="代号" prop="date" width="100px" show-overflow-tooltip></el-table-column>
-                <el-table-column label="规格型号" prop="date" width="100px" show-overflow-tooltip></el-table-column>
-                <el-table-column label="执行标准" prop="date" width="100px" show-overflow-tooltip></el-table-column>
-                <el-table-column label="单位" prop="date" width="100px" show-overflow-tooltip></el-table-column>
-                <el-table-column label="数量" prop="date" width="100px" show-overflow-tooltip></el-table-column>
-                <el-table-column label="单价" prop="date" width="100px" show-overflow-tooltip></el-table-column>
-                <el-table-column label="金额" prop="date" width="100px" show-overflow-tooltip></el-table-column>
-                <el-table-column label="备注" prop="date" width="100px" show-overflow-tooltip></el-table-column>
-                <el-table-column label="操作" prop="date" width="100px" show-overflow-tooltip></el-table-column>
+                <el-table-column label="序号" prop="index" width="50px" type="index" :index="indexMethod" align="center"
+                                 show-overflow-tooltip></el-table-column>
+                <el-table-column label="物资名称" prop="name" show-overflow-tooltip></el-table-column>
+                <el-table-column label="代号" prop="code" width="80px" show-overflow-tooltip></el-table-column>
+                <el-table-column label="规格型号" prop="standards" width="100px" show-overflow-tooltip></el-table-column>
+                <el-table-column label="执行标准" prop="exe_standard" width="100px" show-overflow-tooltip></el-table-column>
+                <el-table-column label="单位" prop="unit" width="60px" align="center" show-overflow-tooltip>
+                  <template v-slot="scope">
+                    {{ unitName(scope.row.unit) }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="数量" prop="num" width="60px" align="center" show-overflow-tooltip></el-table-column>
+                <el-table-column label="单价" prop="price" width="100px" show-overflow-tooltip></el-table-column>
+                <el-table-column label="金额" prop="totalPrice" width="100px" show-overflow-tooltip></el-table-column>
+                <el-table-column label="备注" prop="remarks" width="100px" show-overflow-tooltip></el-table-column>
+                <el-table-column label="操作" width="100px">
+                  <template v-slot="scope">
+                    <el-button type="text">更改</el-button>
+                    <el-button type="text">删除</el-button>
+                  </template>
+                </el-table-column>
               </el-table>
             </div>
           </el-form>
@@ -274,7 +287,7 @@
                customClass="customWidthwide">
       <div class="scroll">
         <el-scrollbar>
-          <el-form label-position="right" label-width="90px" size="mini"  ref="editForm" :rules="formRules">
+          <el-form label-position="right" label-width="90px" size="mini" ref="editForm" :rules="formRules">
             <div style="margin-bottom: 20px"><span style="color:red">*</span><span>合同基础信息</span></div>
             <el-row :gutter="20">
               <el-col :span="15">
@@ -377,7 +390,8 @@
         <el-button type="primary" @click="submitEditPurchase">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="查看合同详情" :visible.sync="detailPurchaseDialogVisible" :close-on-click-modal="false" customClass="customWidthwide">
+    <el-dialog title="查看合同详情" :visible.sync="detailPurchaseDialogVisible" :close-on-click-modal="false"
+               customClass="customWidthwide">
       <div class="scroll">
         <el-scrollbar>
           <el-form label-position="right" label-width="90px" size="mini">
@@ -466,22 +480,79 @@
 
 
     <el-dialog title="添加物资" :visible.sync="addMaterialDialogVisible" :close-on-click-modal="false">
-      <el-form label-position="right" label-width="90px" size="mini"  ref="addMaterialForm" :rules="materialFormRules">
+      <el-form :model="addMaterialForm" label-position="right" label-width="90px" size="mini" ref="addMaterialFormRefs"
+               :rules="materialFormRules">
         <el-row>
-          <el-col>
+          <el-col :span="15">
             <el-form-item label="物资名称" prop="name">
-              <el-input v-model="addMaterialForm.name"/>
+              <el-input v-model="addMaterialForm.name" @change="searchCode"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="代号" prop="code">
+              <el-select v-model="addMaterialForm.code" @change="fillOtherInfo" filterable clearable>
+                <el-option
+                    v-for="item in codeList"
+                    :key="item.code"
+                    :label="item.code"
+                    :value="item.code">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col>
-
+          <el-col :span="8">
+            <el-form-item label="规格型号" prop="standards">
+              <el-input v-model="addMaterialForm.standards"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="执行标准" prop="exe_standard">
+              <el-input v-model="addMaterialForm.exe_standard"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="单位" prop="unit">
+              <el-select v-model="addMaterialForm.unit" filterable clearable size="mini">
+                <el-option
+                    v-for="item in unitList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col>
-
+          <el-col :span="7">
+            <el-form-item label="数量" prop="num">
+              <el-input v-model.number="addMaterialForm.num"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="单价" prop="price">
+              <el-input v-model.number="addMaterialForm.price"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="金额" prop="totalPrice">
+              <el-input v-model.number="addMaterialForm.totalPrice" :value="oneMaterialTotalPrice" readonly/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="23">
+            <el-form-item label="备注:">
+              <el-input
+                  v-model="addMaterialForm.remarks"
+                  type="textarea"
+                  autosize
+                  clearable
+                  placeholder="请输入备注内容">
+              </el-input>
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -491,7 +562,7 @@
       </div>
     </el-dialog>
     <el-dialog title="修改物资" :visible.sync="editMaterialDialogVisible" :close-on-click-modal="false">
-      <el-form label-position="right" label-width="90px" size="mini"  ref="editMaterialForm" :rules="materialFormRules">
+      <el-form label-position="right" label-width="90px" size="mini" ref="editMaterialForm" :rules="materialFormRules">
         <el-row>
           <el-col>
 
@@ -560,20 +631,21 @@ export default {
       addPurchaseForm: {
         name: null,
         code: null,
-        date:null,
-        place:null,
+        date: null,
+        place: null,
         supplier: null,
-        remarks:null,
+        remarks: null,
         appendix: [],
         detail: [],
+        totalMoney: 0,// 总金额
       },// 添加合同表单
       editPurchaseForm: {
         name: null,
         code: null,
-        date:null,
-        place:null,
+        date: null,
+        place: null,
         supplier: null,
-        remarks:null,
+        remarks: null,
         appendix: [],
         detail: [],
       },//修改合同表单
@@ -585,8 +657,20 @@ export default {
         deliver: [],
         invoice: [],
       },//合同详情表单
-      addMaterialForm: {},
+      addMaterialForm: {
+        name: null,
+        code: null,
+        standards: null,
+        exe_standard: null,
+        unit: null,
+        num: null,
+        price: null,
+        totalPrice: null,
+        remarks:null,
+      },
       editMaterialForm: {},
+      codeList: [],// 添加物资时根据名称返回的代号及其他信息列表
+      unitList: [],
       formRules: {
         name: [{required: true, message: '请填写名称', trigger: 'blur'}],
         code: [{required: true, message: '请填写编号', trigger: 'blur'}],
@@ -596,8 +680,8 @@ export default {
       tableData: [],
 
       supplierList: [
-        {name:"123"},
-        {name:"123456"}
+        {name: "123"},
+        {name: "123456"}
       ],// 供应商列表
       appendixDialogVisible: false,  // 附件弹窗显示
       addPurchaseDialogVisible: false,  // 新增合同弹窗显示
@@ -606,18 +690,20 @@ export default {
       addMaterialDialogVisible: false,  // 添加物资
       editMaterialDialogVisible: false,  // 修改物资
       total: 0,  // 表格数据条数
-      totalMoney: 100,// 总金额
+
     }
   },
   created() {
     this.getPurchaseList()
     this.getSuppliers()
+    this.getUnitList()
   },
-  mounted() {},
+  mounted() {
+  },
 
   methods: {
     // 点击查询按钮
-    async query(){
+    async query() {
       this.queryForm.pagenum = 1
       await this.getPurchaseList()
     },
@@ -689,24 +775,64 @@ export default {
       }
     },
     // 添加物资
-    addMaterial(){
+    addMaterial() {
       this.addMaterialDialogVisible = true
     },
     // 提交添加物资
-    submitAddMaterial(){},
+    submitAddMaterial() {
+      this.addMaterialDialogVisible = false
+      this.addPurchaseForm.detail.push({...this.addMaterialForm})
+      this.$refs.addMaterialFormRefs.resetFields()
+    },
     // 取消添加物资
-    cancelAddMaterial(){
+    cancelAddMaterial() {
       this.addMaterialDialogVisible = false
       this.$refs.addMaterialForm.resetFields()
     },
     // 修改物资
-    editMaterial(){},
+    editMaterial() {
+    },
     // 提交修改物资
-    submitEditMaterial(){},
+    submitEditMaterial() {
+    },
     // 删除物资
-    deleteMaterial(){},
+    deleteMaterial() {
+    },
+    // 获取单位列表
+    async getUnitList() {
+      const {data: res} = await this.$http.get('material/mater_mg/', {params: {action: 'list_unit'}})
+      if (res.ret === 0) {
+        this.unitList = res.retlist
+      } else {
+        this.$message.error("获取不到单位")
+      }
+    },
+    // 输入物资名称搜索代号
+    searchCode() {
+    },
+    // 根据选择代号填入其他信息
+    fillOtherInfo() {
+    },
+
+
+    indexMethod(index) {
+      return index + 1;
+    }
   },
-  computed: {},
+  computed: {
+    oneMaterialTotalPrice() {
+      this.addMaterialForm.totalPrice = this.addMaterialForm.num * this.addMaterialForm.price
+    },
+    unitName() {
+      return function (unitID) {
+        for (let item of this.unitList) {
+          if (item.id === unitID) {
+            return item.name
+          }
+        }
+      }
+    },
+  },
 
 }
 </script>
@@ -743,7 +869,7 @@ export default {
 }
 
 .scroll {
-  height: 50vh;
+  height: 550px;
 }
 
 .el-scrollbar {
@@ -763,10 +889,12 @@ export default {
 .customWidthwide {
   width: 1200px;
 }
+
 /*签订日期宽度*/
 .el-date-editor .el-input__inner {
   width: 230px;
 }
+
 .el-scrollbar__wrap {
   overflow-x: hidden !important;
 }
